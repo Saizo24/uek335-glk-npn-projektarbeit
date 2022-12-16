@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Paragraph, Switch, Title } from "react-native-paper";
 import { StyleSheet } from "react-native";
+import { WeekdayModel } from "../../types/weekday.model";
 
 type Props = {
   time: Date;
   title: string;
+  days: WeekdayModel[];
+  switchState: boolean;
 };
 
 export default function ReminderCard() {
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   return (
