@@ -17,14 +17,10 @@ const OurFAB = () => {
 
 const styles = StyleSheet.create({
   fab: {
-    bottom: 0,
+    bottom: 15,
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    right: "auto",
-    left: "auto",
-    marginBottom: 15,
-    transform: [{ translateX: 28 }],
   },
 });
 
