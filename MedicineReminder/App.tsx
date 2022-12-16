@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingPage from "./components/pages/LandingPage";
-import EditPage from "./components/pages/EditPage";
+import CreateEditPage from "./components/pages/CreateEditPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -11,7 +11,12 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Reminder" component={LandingPage} />
-        <Stack.Screen name="Edit" component={EditPage} />
+        <Stack.Screen name="New Reminder">
+          {() => <CreateEditPage type="New" />}
+        </Stack.Screen>
+        <Stack.Screen name="Edit Reminder">
+          {() => <CreateEditPage type="Edit" />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
