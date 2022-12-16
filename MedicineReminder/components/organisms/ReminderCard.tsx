@@ -1,24 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Paragraph, Switch, Title } from "react-native-paper";
 import { StyleSheet } from "react-native";
-import { WeekdayModel } from "../../types/weekday.model";
+import { WeekdayModel } from "../types/weekday.model";
+import StorageService from "../../services/StorageService";
+import { Reminder } from "../types/Reminder.model";
 
 type Props = {
-  time: Date;
-  title: string;
-  days: WeekdayModel[];
+  reminder: Reminder;
   switchState: boolean;
 };
 
-export default function ReminderCard() {
+export default function ReminderCard(props: Props) {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const [time, setTime] = useState("");
+  const [title, setTitle] = useState();
+  const [days, setDays] = useState();
+
+  useEffect(() => {
+    StorageService.getData(`@${props.reminder.id}_timekey`).then((value) => {
+      if (value) setTime(String(value));
+    });
+  }, []);
 
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <Title style={styles.cardText}>Time | Title</Title>
-        <Paragraph style={styles.cardText}>Days for Reminder</Paragraph>
+        <Title style={styles.cardText}>
+          {time} | {title}
+        </Title>
+        <Paragraph style={styles.cardText}>{days}</Paragraph>
       </Card.Content>
       <Card.Actions style={styles.cardAction}>
         <Switch
