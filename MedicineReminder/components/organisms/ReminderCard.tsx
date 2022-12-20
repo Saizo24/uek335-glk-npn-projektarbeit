@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Card, Paragraph, Switch, Title } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import { Reminder } from "../../types/Reminder.model";
-import { useTranslation } from "react-i18next";
 import { WeekdayModel } from "../types/weekday.model";
+import { useNavigation } from "@react-navigation/native";
 
 type ReminderProps = {
   reminder: Reminder;
@@ -11,12 +11,17 @@ type ReminderProps = {
 };
 
 export default function ReminderCard(props: ReminderProps) {
-  const { t } = useTranslation();
+  const navigation = useNavigation();
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   return (
-    <Card style={styles.card}>
+    <Card
+      style={styles.card}
+      onPress={() => {
+        navigation.navigate("Edit Reminder", props.reminder);
+      }}
+    >
       <View style={styles.layout}>
         <Card.Content>
           <Title style={styles.cardText}>
