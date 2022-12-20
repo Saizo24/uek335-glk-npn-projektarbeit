@@ -13,15 +13,6 @@ type Props = {
 export default function ReminderCard(props: Props) {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-  const [time, setTime] = useState("");
-  const [title, setTitle] = useState();
-  const [days, setDays] = useState();
-
-  useEffect(() => {
-    StorageService.getData(`@${props.reminder.id}_timekey`).then((value) => {
-      if (value) setTime(String(value));
-    });
-  }, []);
 
   return (
     <Card style={styles.card}>
