@@ -1,7 +1,8 @@
 export type Reminder = {
     id: string
     name: string
-    reminderTime: Date
+    minutes: number
+    hours: number
     repeatCount: number
     days: number[]
 }

@@ -6,7 +6,7 @@ const storeDataInStorage = async (value: string) => {
   try {
     await AsyncStorage.setItem(reminderKey, value);
   } catch (e) {
-    console.error("this no good");
+    console.error("Data could not be saved");
   }
 };
 
@@ -17,7 +17,7 @@ const getFullStorage = async () => {
       return value;
     }
   } catch (e) {
-    console.log("data no found")
+    console.log("No Data found")
   }
 };
 

@@ -5,12 +5,12 @@ import { WeekdayModel } from "../types/weekday.model";
 import StorageService from "../../services/StorageService";
 import { Reminder } from "../types/Reminder.model";
 
-type Props = {
+type ReminderProps = {
   reminder: Reminder;
   switchState: boolean;
 };
 
-export default function ReminderCard(props: Props) {
+export default function ReminderCard(props: ReminderProps) {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
