@@ -7,13 +7,34 @@ import StorageService from "../../services/StorageService";
 import { Reminder } from "../types/Reminder.model";
 
 export default function LandingPage() {
-  const [reminders, setReminders] = useState<Reminder[]>();
+  const [reminders, setReminders] = useState<Reminder[]>([]);
 
   useEffect(() => {
     StorageService.getFullStorage().then((value) => {
-      setReminders(JSON.parse(value));
+      //setReminders(JSON.parse(value));
+      setReminders(exampleReminders);
     });
   }, []);
+
+  const exampleReminders: Reminder[] = [
+    {
+      id: "1",
+      name: "Chopfweh",
+      minutes: 30,
+      hours: 12,
+      repeatCount: 4,
+      days: [0, 3],
+    },
+    {
+      id: "2",
+      name: "Buchweh",
+      minutes: 35,
+      hours: 14,
+      repeatCount: 2,
+      days: [0, 1, 2, 3, 4, 5, 6],
+    },
+    { id: "3", name: "alles", minutes: 0, hours: 8, repeatCount: 1, days: [6] },
+  ];
 
   return (
     <View style={styles.view}>
