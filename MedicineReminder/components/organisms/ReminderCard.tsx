@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, Paragraph, Switch, Title } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import { Reminder } from "../../types/Reminder.model";
-import { WeekdayModel } from "../types/weekday.model";
+import { WeekdayModel } from "../../types/weekday.model";
 import { useNavigation } from "@react-navigation/native";
+import notifee, { TimestampTrigger, TriggerType } from "@notifee/react-native";
 
 type ReminderProps = {
   reminder: Reminder;
@@ -13,7 +14,39 @@ type ReminderProps = {
 export default function ReminderCard(props: ReminderProps) {
   const navigation = useNavigation();
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const onToggleSwitch = () => {
+    setIsSwitchOn(!isSwitchOn);
+    createNewTriggers();
+  };
+
+  async function createNewTriggers() {
+    {
+      const date = new Date(Date.now());
+      props.reminder.days.forEach((day: number) => {
+        date.setDate(date.getDate() - date.getDay() + day);
+        date.setHours(props.reminder.hours);
+        date.setMinutes(props.reminder.minutes);
+      });
+      // Create a time-based trigger
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: date.getTime(), // fire at 11:10am (10 minutes before meeting)
+      };
+
+      // Create a trigger notification
+      await notifee.createTriggerNotification(
+        {
+          title: props.reminder.name,
+          body: props.reminder.description,
+          android: {
+            channelId: "your-channel-id",
+          },
+        },
+        trigger
+      );
+      console.log(trigger);
+    }
+  }
 
   return (
     <Card

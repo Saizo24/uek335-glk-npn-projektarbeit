@@ -24,20 +24,30 @@ export default function LandingPage() {
     {
       id: "1",
       name: "Chopfweh",
-      minutes: 30,
-      hours: 12,
+      description: "ich han chopfweh",
+      minutes: 26,
+      hours: 17,
       repeatCount: 4,
       days: [0, 3],
     },
     {
       id: "2",
       name: "Buchweh",
-      minutes: 35,
-      hours: 14,
+      description: "ich han buchweh",
+      minutes: 24,
+      hours: 18,
       repeatCount: 2,
       days: [0, 1, 2, 3, 4, 5, 6],
     },
-    { id: "3", name: "alles", minutes: 0, hours: 8, repeatCount: 1, days: [6] },
+    {
+      id: "3",
+      name: "alles",
+      description: "ich han alles weh",
+      minutes: 29,
+      hours: 17,
+      repeatCount: 1,
+      days: [6],
+    },
   ];
 
   return (
