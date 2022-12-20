@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Paragraph, Switch, Title } from "react-native-paper";
-import { StyleSheet } from "react-native";
-import { WeekdayModel } from "../types/weekday.model";
+import { StyleSheet, View } from "react-native";
 import { Reminder } from "../types/Reminder.model";
 import { useTranslation } from "react-i18next";
 
@@ -18,21 +17,23 @@ export default function ReminderCard(props: ReminderProps) {
 
   return (
     <Card style={styles.card}>
-      <Card.Content>
-        <Title style={styles.cardText}>
-          {props.reminder.hours}:{props.reminder.minutes} |
-          {props.reminder.days.map((day: number) => " " + weekdays[day])}
-          {props.reminder.name}
-        </Title>
-        <Paragraph style={styles.cardText}>{}</Paragraph>
-      </Card.Content>
-      <Card.Actions style={styles.cardAction}>
-        <Switch
-          value={isSwitchOn}
-          onValueChange={onToggleSwitch}
-          style={styles.switch}
-        />
-      </Card.Actions>
+      <View style={styles.layout}>
+        <Card.Content>
+          <Title style={styles.cardText}>
+            {props.reminder.hours}:{props.reminder.minutes} |
+            {props.reminder.days.map((day: number) => " " + weekdays[day])}
+            {props.reminder.name}
+          </Title>
+          <Paragraph style={styles.cardText}>{}</Paragraph>
+        </Card.Content>
+        <Card.Actions style={styles.cardAction}>
+          <Switch
+            value={isSwitchOn}
+            onValueChange={onToggleSwitch}
+            style={styles.switch}
+          />
+        </Card.Actions>
+      </View>
     </Card>
   );
 }
@@ -42,9 +43,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
+
     backgroundColor: "#000",
   },
+  layout: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 10,
+    paddingLeft: 0,
+  },
   cardText: { top: 0, color: "#fff" },
-  cardAction: { flex: 1, position: "absolute", right: 0, top: 0 },
+  cardContent: { flex: 5 },
+  cardAction: { flex: 1, right: 0, top: 0, justifyContent: "center" },
   switch: {},
 });
