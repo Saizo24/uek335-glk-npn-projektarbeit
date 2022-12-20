@@ -3,16 +3,13 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingPage from "./components/pages/LandingPage";
 import CreateEditPage from "./components/pages/CreateEditPage";
-import {
-  de,
-  enGB,
-  registerTranslation,
-} from 'react-native-paper-dates'
+import { de, enGB, registerTranslation } from "react-native-paper-dates";
+import "./i18n/config";
 
 const Stack = createNativeStackNavigator();
 
-registerTranslation('en-GB', enGB)
-registerTranslation('de', de)
+registerTranslation("en-GB", enGB);
+registerTranslation("de", de);
 
 export default function App() {
   return (

@@ -1,73 +1,84 @@
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { Moment } from "moment";
 import React from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Button, Paragraph, Title } from "react-native-paper";
 import { TimePickerModal } from "react-native-paper-dates";
-import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekdaysDialog";
 
 type CreateEditPageProp = {
-  type: string
-}
+  type: string;
+};
 
 const CreateEditPage = ({ type }: CreateEditPageProp) => {
-
-  const [minutes, setMinutes] = React.useState(0)
-  const [hours, setHours] = React.useState(0)
+  const [minutes, setMinutes] = React.useState(0);
+  const [hours, setHours] = React.useState(0);
   const [timeOpen, setTimeOpen] = React.useState(false);
-  const [weekdaysOpen, setWeekdaysOpen] = React.useState(false)
+  const [weekdaysOpen, setWeekdaysOpen] = React.useState(false);
   const [weekdays, setWeekdays] = React.useState([]);
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const handleOpenChooseTime = () => {
-    setTimeOpen(true)
-  }
+    setTimeOpen(true);
+  };
 
   const handleConfirmTime = ({ hours, minutes }) => {
-    setHours(hours)
-    setMinutes(minutes)
-    setTimeOpen(false)
-  }
+    setHours(hours);
+    setMinutes(minutes);
+    setTimeOpen(false);
+  };
 
   const handleDismissTime = () => {
-    setTimeOpen(false)
-  }
+    setTimeOpen(false);
+  };
 
   const handleOpenChooseWeekdays = () => {
-    setWeekdaysOpen(true)
-  }
+    setWeekdaysOpen(true);
+  };
 
   const handleDismissWeekdays = () => {
-    setWeekdaysOpen(false)
-  }
+    setWeekdaysOpen(false);
+  };
 
   return (
     <View style={styles.view}>
       <View style={styles.page}>
         <StatusBar style="auto" />
         <View style={styles.topBar}>
-          <Button mode="text" onPress={() => {
-            navigation.goBack()
-          }}>
+          <Button
+            mode="text"
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
             Cancel
           </Button>
-          <Button mode="text">
-            Save
-          </Button>
+          <Button mode="text">Save</Button>
         </View>
         <View style={styles.timeView}>
-          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-            <Paragraph style={styles.timeText}>{String(hours).padStart(2, '0')}</Paragraph>
+          <TouchableOpacity
+            style={styles.timeBox}
+            onPress={handleOpenChooseTime}
+          >
+            <Paragraph style={styles.timeText}>
+              {String(hours).padStart(2, "0")}
+            </Paragraph>
           </TouchableOpacity>
           <Paragraph style={styles.timeText}>:</Paragraph>
-          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-            <Paragraph style={styles.timeText}>{String(minutes).padStart(2, '0')}</Paragraph>
+          <TouchableOpacity
+            style={styles.timeBox}
+            onPress={handleOpenChooseTime}
+          >
+            <Paragraph style={styles.timeText}>
+              {String(minutes).padStart(2, "0")}
+            </Paragraph>
           </TouchableOpacity>
         </View>
         <View style={styles.textDataBox}>
-          <TouchableOpacity style={styles.textBox} onPress={handleOpenChooseWeekdays}>
+          <TouchableOpacity
+            style={styles.textBox}
+            onPress={handleOpenChooseWeekdays}
+          >
             <Paragraph>Repeat on:</Paragraph>
             <Paragraph style={styles.textValue}>Mo, Su</Paragraph>
           </TouchableOpacity>
@@ -81,7 +92,6 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
           hours={hours}
           minutes={minutes}
         />
-        <ChooseWeekdaysDialog weekdaysOpen={weekdaysOpen} handleDismissWeekdays={handleDismissWeekdays} weekdays={weekdays} setWeekdays={setWeekdays} />
       </View>
     </View>
   );
@@ -99,7 +109,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 10,
     height: 70,
-    borderWidth: 1, borderColor: "black"
+    borderWidth: 1,
+    borderColor: "black",
   },
   button: {
     flex: 1,
@@ -112,8 +123,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    borderWidth: 1, borderColor: "black",
-
+    borderWidth: 1,
+    borderColor: "black",
   },
   timeBox: {
     padding: 0,
@@ -122,25 +133,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "pink",
     margin: 10,
-
   },
   timeText: {
     fontSize: 30,
     lineHeight: 37,
-
   },
   textDataBox: {
     borderWidth: 1,
     borderColor: "black",
     alignSelf: "stretch",
     flex: 1,
-    padding: 10
+    padding: 10,
   },
   textBox: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   textValue: {
-    color: "grey"
-  }
+    color: "grey",
+  },
 });

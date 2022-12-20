@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Card, Paragraph, Switch, Title } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
-import { Reminder } from "../types/Reminder.model";
+import { Reminder } from "../../types/Reminder.model";
 import { useTranslation } from "react-i18next";
+import { WeekdayModel } from "../types/weekday.model";
 
 type ReminderProps = {
   reminder: Reminder;
@@ -13,18 +14,19 @@ export default function ReminderCard(props: ReminderProps) {
   const { t } = useTranslation();
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-  const weekdays = t("weekdays", { returnObjects: true });
 
   return (
     <Card style={styles.card}>
       <View style={styles.layout}>
         <Card.Content>
           <Title style={styles.cardText}>
-            {props.reminder.hours}:{props.reminder.minutes} |
-            {props.reminder.days.map((day: number) => " " + weekdays[day])}
+            {props.reminder.hours.toString().padStart(2, "0")}:
+            {props.reminder.minutes.toString().padStart(2, "0")} |{" "}
             {props.reminder.name}
           </Title>
-          <Paragraph style={styles.cardText}>{}</Paragraph>
+          <Paragraph style={styles.cardText}>
+            {props.reminder.days.map((day: number) => " " + WeekdayModel[day])}
+          </Paragraph>
         </Card.Content>
         <Card.Actions style={styles.cardAction}>
           <Switch

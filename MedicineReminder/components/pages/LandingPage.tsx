@@ -4,7 +4,7 @@ import ReminderCard from "../organisms/ReminderCard";
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, View } from "react-native";
 import StorageService from "../../services/StorageService";
-import { Reminder } from "../types/Reminder.model";
+import { Reminder } from "../../types/Reminder.model";
 
 export default function LandingPage() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -15,6 +15,10 @@ export default function LandingPage() {
       setReminders(exampleReminders);
     });
   }, []);
+
+  const generateTimeInMinutes = (hours: number, minutes: number) => {
+    return hours * 60 + minutes;
+  };
 
   const exampleReminders: Reminder[] = [
     {
@@ -40,9 +44,15 @@ export default function LandingPage() {
     <View style={styles.view}>
       <ScrollView style={styles.scrollView}>
         <StatusBar style="auto" />
-        {reminders.map((reminder: Reminder) => (
-          <ReminderCard reminder={reminder} switchState={false} />
-        ))}
+        {reminders
+          .sort(
+            (a, b) =>
+              generateTimeInMinutes(a.hours, a.minutes) -
+              generateTimeInMinutes(b.hours, b.minutes)
+          )
+          .map((reminder: Reminder) => (
+            <ReminderCard reminder={reminder} switchState={false} />
+          ))}
       </ScrollView>
       <OurFAB />
     </View>
