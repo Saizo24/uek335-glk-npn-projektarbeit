@@ -2,13 +2,16 @@ import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { Moment } from "moment";
 import React from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity, Keyboard } from "react-native";
-import { Button, Paragraph, TextInput, Title } from "react-native-paper";
+import { View, StyleSheet, TouchableOpacity, Keyboard, ScrollView } from "react-native";
+import { Button, Paragraph, TextInput } from "react-native-paper";
 import { TimePickerModal } from "react-native-paper-dates";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekdaysDialog"
+import { Reminder } from "../types/Reminder.model";
 
 type CreateEditPageProp = {
   type: string
+  reminder: Reminder
 }
 
 export const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -23,8 +26,10 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   const [weekdayNameShorts, setWeekdayNameShorts] = React.useState<String[]>([])
   const [repeatCount, setRepeatCount] = React.useState<number>(0)
   const [repeatInputActive, setRepeatInputActive] = React.useState(false)
-  const [descriptionInputActive, setDescriptionInputActive] = React.useState(false)
   const [reminderTitle, setReminderTitle] = React.useState("")
+  const [reminderTitleInputActive, setReminderTitleInputActive] = React.useState(false)
+  const [descriptionInputActive, setDescriptionInputActive] = React.useState(false)
+  const [reminderDescription, setReminderDescription] = React.useState("")
 
   const navigation = useNavigation()
 
@@ -64,86 +69,123 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   }
 
   return (
-    <View style={styles.page}>
+
+
+    <KeyboardAwareScrollView
+      scrollEnabled={true}
+      contentContainerStyle={{ ...styles.view, flexGrow: 1 }}
+      keyboardShouldPersistTaps={'always'}
+      showsVerticalScrollIndicator={false}
+      enableAutomaticScroll={true}
+      scrollToOverflowEnabled={true}
+    >
       <StatusBar style="auto" />
-
-      <ScrollView scrollEnabled={false} contentContainerStyle={styles.view} style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        <View style={{ width: "100%", minHeight: "100%" }}>
-          <View style={styles.topBar}>
-            <Button onPress={() => {
-              navigation.goBack()
-            }}>
-              Cancel
-            </Button>
-            <Button>
-              Save
-            </Button>
-          </View>
-          <View style={styles.timeView}>
-            <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-              <Paragraph style={styles.timeText}>{String(hours).padStart(2, '0')}</Paragraph>
-            </TouchableOpacity>
-            <Paragraph style={styles.timeText}>:</Paragraph>
-            <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-              <Paragraph style={styles.timeText}>{String(minutes).padStart(2, '0')}</Paragraph>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.textDataBox}>
-            <TouchableOpacity style={styles.textBox} onPress={handleOpenChooseWeekdays}>
-              <Paragraph>Repeat on:</Paragraph>
-              <Paragraph style={styles.textValue}>{
-                weekdayNameShorts.length !== 0 ? weekdayNameShorts.join(", ") : "Never"
-              }</Paragraph>
-            </TouchableOpacity>
-
-            {
-              repeatInputActive ?
-                <TextInput
-                  label="Repeat Count in Weeks"
-                  keyboardType="decimal-pad"
-                  autoFocus
-                  returnKeyType="done"
-                  value={repeatCount ? repeatCount.toString() : ""}
-                  onChangeText={(value) => {
-                    setRepeatCount(Number(value && value !== "" ? value : 0))
-                  }}
-                  onEndEditing={() => {
-                    setRepeatInputActive(false)
-                    Keyboard.dismiss()
-                  }}
-                />
-                : <TouchableOpacity style={styles.textBox} disabled={weekdays.length === 0} onPress={() => setRepeatInputActive(true)}>
-                  <Paragraph style={weekdays.length === 0 ? styles.textValue : {}}>Repeat Count in Weeks:</Paragraph>
-                  <Paragraph style={styles.textValue}>{repeatCount}</Paragraph>
-                </TouchableOpacity>
-            }
-            {
-              repeatInputActive ?
-                <TextInput
-                  label="Title"
-                  autoFocus
-                  returnKeyType="done"
-                  value={reminderTitle}
-                  placeholder="Reminder"
-                  onChangeText={(value) => {
-                    setReminderTitle(value)
-                  }}
-                  onEndEditing={() => {
-                    setRepeatInputActive(false)
-                    Keyboard.dismiss()
-                  }}
-                />
-                : <TouchableOpacity style={styles.textBox} disabled={weekdays.length === 0} onPress={() => setRepeatInputActive(true)}>
-                  <Paragraph style={weekdays.length === 0 ? styles.textValue : {}}>Repeat Count in Weeks:</Paragraph>
-                  <Paragraph style={styles.textValue}>{repeatCount}</Paragraph>
-                </TouchableOpacity>
-            }
-
-          </View>
-
+      <ScrollView>
+        <View style={styles.topBar}>
+          <Button onPress={() => {
+            navigation.goBack()
+          }}>
+            Cancel
+          </Button>
+          <Button>
+            Save
+          </Button>
         </View>
+        <View style={styles.timeView}>
+          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
+            <Paragraph style={styles.timeText}>{String(hours).padStart(2, '0')}</Paragraph>
+          </TouchableOpacity>
+          <Paragraph style={styles.timeText}>:</Paragraph>
+          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
+            <Paragraph style={styles.timeText}>{String(minutes).padStart(2, '0')}</Paragraph>
+          </TouchableOpacity>
+        </View>
+        <View style={{ ...styles.textDataBox }}>
+          <TouchableOpacity style={styles.textBox} onPress={handleOpenChooseWeekdays}>
+            <Paragraph>Repeat on:</Paragraph>
+            <Paragraph style={styles.textValue}>{
+              weekdayNameShorts.length !== 0 ? weekdayNameShorts.join(", ") : "Never"
+            }</Paragraph>
+          </TouchableOpacity>
 
+          {
+            repeatInputActive ?
+              <TextInput
+                label="Repeat Count in Weeks"
+                keyboardType="decimal-pad"
+                autoFocus
+                returnKeyType="done"
+
+                value={repeatCount ? repeatCount.toString() : ""}
+                onChangeText={(value) => {
+                  setRepeatCount(Number(value && value !== "" ? value : 0))
+                }}
+                onSubmitEditing={() => {
+                  setReminderTitleInputActive(true)
+                  setRepeatInputActive(false)
+                }}
+                onBlur={() => {
+                  setRepeatInputActive(false)
+                  Keyboard.dismiss()
+                }}
+                blurOnSubmit={false}
+                style={styles.inputField}
+              />
+              : <TouchableOpacity style={styles.textBox} disabled={weekdays.length === 0} onPress={() => setRepeatInputActive(true)}>
+                <Paragraph style={weekdays.length === 0 ? styles.textValue : {}}>Repeat Count in Weeks:</Paragraph>
+                <Paragraph style={styles.textValue}>{repeatCount}</Paragraph>
+              </TouchableOpacity>
+          }
+          {
+            reminderTitleInputActive ?
+              <TextInput
+                label="Title"
+                returnKeyType="done"
+                autoFocus
+                value={reminderTitle}
+                onChangeText={(value) => {
+                  setReminderTitle(value)
+                }}
+                onSubmitEditing={() => {
+                  setReminderTitleInputActive(false)
+                  setDescriptionInputActive(true)
+                }}
+                onBlur={() => {
+                  setReminderTitleInputActive(false)
+                  Keyboard.dismiss()
+                }}
+                blurOnSubmit={false}
+                style={{ ...styles.inputField }}
+              />
+              : <TouchableOpacity style={styles.textBox} onPress={() => { setReminderTitleInputActive(true) }}>
+                <Paragraph style={weekdays.length === 0 ? styles.textValue : {}}>Title:</Paragraph>
+                <Paragraph style={styles.textValue}>{reminderTitle === "" ? "Reminder" : reminderTitle}</Paragraph>
+              </TouchableOpacity>
+          }
+          <TouchableOpacity style={{ ...styles.descriptionBox, }}>
+            <Paragraph>Description</Paragraph>
+
+            <TextInput
+              multiline={true}
+              numberOfLines={20}
+              keyboardType="ascii-capable"
+              value={reminderDescription}
+              textAlignVertical="top"
+              scrollEnabled={false}
+              onChangeText={(value) => {
+                setReminderDescription(value)
+              }}
+              onFocus={() => {
+                setDescriptionInputActive(true)
+              }}
+              onBlur={() => {
+                setDescriptionInputActive(false)
+                Keyboard.dismiss()
+              }}
+            />
+
+          </TouchableOpacity>
+        </View>
       </ScrollView>
       <ChooseWeekdaysDialog weekdaysOpen={weekdaysOpen} handleDismissWeekdays={handleDismissWeekdays} weekdays={weekdays} setWeekdays={setWeekdays} />
       <TimePickerModal
@@ -155,8 +197,7 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
         hours={hours}
         minutes={minutes}
       />
-
-    </View>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -164,7 +205,6 @@ export default CreateEditPage;
 
 const styles = StyleSheet.create({
   view: {
-    alignItems: "center",
   },
   topBar: {
     display: "flex",
@@ -172,21 +212,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 10,
     height: 70,
-    borderWidth: 1, borderColor: "black"
   },
   button: {
-    flex: 1,
   },
   page: {
-    width: "100%",
-    height: "100%",
   },
   timeView: {
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    borderWidth: 1, borderColor: "black",
-
   },
   timeBox: {
     padding: 0,
@@ -203,20 +237,24 @@ const styles = StyleSheet.create({
 
   },
   textDataBox: {
-    borderWidth: 1,
-    borderColor: "black",
+
     alignSelf: "stretch",
-    flexGrow: 1,
-    padding: 10
+    padding: 10,
   },
   textBox: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 10,
     paddingVertical: 4,
-    width: "100%"
   },
   textValue: {
     color: "grey"
+  },
+  inputField: {
+    marginHorizontal: 10,
+  },
+  descriptionBox: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
   }
 });
