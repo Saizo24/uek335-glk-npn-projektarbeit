@@ -2,14 +2,16 @@ import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { Moment } from "moment";
 import React from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { Button, Paragraph, Title } from "react-native-paper";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Keyboard } from "react-native";
+import { Button, Paragraph, TextInput, Title } from "react-native-paper";
 import { TimePickerModal } from "react-native-paper-dates";
-import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekdaysDialog";
+import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekdaysDialog"
 
 type CreateEditPageProp = {
   type: string
 }
+
+export const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 const CreateEditPage = ({ type }: CreateEditPageProp) => {
 
@@ -17,9 +19,21 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   const [hours, setHours] = React.useState(0)
   const [timeOpen, setTimeOpen] = React.useState(false);
   const [weekdaysOpen, setWeekdaysOpen] = React.useState(false)
-  const [weekdays, setWeekdays] = React.useState([]);
+  const [weekdays, setWeekdays] = React.useState([1, 4]);
+  const [weekdayNameShorts, setWeekdayNameShorts] = React.useState<String[]>([])
+  const [repeatCount, setRepeatCount] = React.useState<number>(0)
+  const [repeatInputActive, setRepeatInputActive] = React.useState(false)
+  const [descriptionInputActive, setDescriptionInputActive] = React.useState(false)
+  const [reminderTitle, setReminderTitle] = React.useState("")
 
   const navigation = useNavigation()
+
+  React.useEffect(() => {
+    generateWeekdayNames()
+    if (weekdays.length === 0) {
+      setRepeatCount(0)
+    }
+  }, [weekdays])
 
   const handleOpenChooseTime = () => {
     setTimeOpen(true)
@@ -43,46 +57,105 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
     setWeekdaysOpen(false)
   }
 
+  const generateWeekdayNames = () => {
+    const selectedWeekdayNames: string[] = []
+    weekdays.forEach((weekday) => selectedWeekdayNames.push(weekdayNames[weekday].substring(0, 2)))
+    setWeekdayNameShorts(selectedWeekdayNames)
+  }
+
   return (
-    <View style={styles.view}>
-      <View style={styles.page}>
-        <StatusBar style="auto" />
-        <View style={styles.topBar}>
-          <Button mode="text" onPress={() => {
-            navigation.goBack()
-          }}>
-            Cancel
-          </Button>
-          <Button mode="text">
-            Save
-          </Button>
+    <View style={styles.page}>
+      <StatusBar style="auto" />
+
+      <ScrollView scrollEnabled={false} contentContainerStyle={styles.view} style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <View style={{ width: "100%", minHeight: "100%" }}>
+          <View style={styles.topBar}>
+            <Button onPress={() => {
+              navigation.goBack()
+            }}>
+              Cancel
+            </Button>
+            <Button>
+              Save
+            </Button>
+          </View>
+          <View style={styles.timeView}>
+            <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
+              <Paragraph style={styles.timeText}>{String(hours).padStart(2, '0')}</Paragraph>
+            </TouchableOpacity>
+            <Paragraph style={styles.timeText}>:</Paragraph>
+            <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
+              <Paragraph style={styles.timeText}>{String(minutes).padStart(2, '0')}</Paragraph>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.textDataBox}>
+            <TouchableOpacity style={styles.textBox} onPress={handleOpenChooseWeekdays}>
+              <Paragraph>Repeat on:</Paragraph>
+              <Paragraph style={styles.textValue}>{
+                weekdayNameShorts.length !== 0 ? weekdayNameShorts.join(", ") : "Never"
+              }</Paragraph>
+            </TouchableOpacity>
+
+            {
+              repeatInputActive ?
+                <TextInput
+                  label="Repeat Count in Weeks"
+                  keyboardType="decimal-pad"
+                  autoFocus
+                  returnKeyType="done"
+                  value={repeatCount ? repeatCount.toString() : ""}
+                  onChangeText={(value) => {
+                    setRepeatCount(Number(value && value !== "" ? value : 0))
+                  }}
+                  onEndEditing={() => {
+                    setRepeatInputActive(false)
+                    Keyboard.dismiss()
+                  }}
+                />
+                : <TouchableOpacity style={styles.textBox} disabled={weekdays.length === 0} onPress={() => setRepeatInputActive(true)}>
+                  <Paragraph style={weekdays.length === 0 ? styles.textValue : {}}>Repeat Count in Weeks:</Paragraph>
+                  <Paragraph style={styles.textValue}>{repeatCount}</Paragraph>
+                </TouchableOpacity>
+            }
+            {
+              repeatInputActive ?
+                <TextInput
+                  label="Title"
+                  autoFocus
+                  returnKeyType="done"
+                  value={reminderTitle}
+                  placeholder="Reminder"
+                  onChangeText={(value) => {
+                    setReminderTitle(value)
+                  }}
+                  onEndEditing={() => {
+                    setRepeatInputActive(false)
+                    Keyboard.dismiss()
+                  }}
+                />
+                : <TouchableOpacity style={styles.textBox} disabled={weekdays.length === 0} onPress={() => setRepeatInputActive(true)}>
+                  <Paragraph style={weekdays.length === 0 ? styles.textValue : {}}>Repeat Count in Weeks:</Paragraph>
+                  <Paragraph style={styles.textValue}>{repeatCount}</Paragraph>
+                </TouchableOpacity>
+            }
+
+          </View>
+
         </View>
-        <View style={styles.timeView}>
-          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-            <Paragraph style={styles.timeText}>{String(hours).padStart(2, '0')}</Paragraph>
-          </TouchableOpacity>
-          <Paragraph style={styles.timeText}>:</Paragraph>
-          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-            <Paragraph style={styles.timeText}>{String(minutes).padStart(2, '0')}</Paragraph>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.textDataBox}>
-          <TouchableOpacity style={styles.textBox} onPress={handleOpenChooseWeekdays}>
-            <Paragraph>Repeat on:</Paragraph>
-            <Paragraph style={styles.textValue}>Mo, Su</Paragraph>
-          </TouchableOpacity>
-        </View>
-        <TimePickerModal
-          visible={timeOpen}
-          onDismiss={handleDismissTime}
-          onConfirm={handleConfirmTime}
-          cancelLabel={"Cancel"}
-          confirmLabel={"Confirm"}
-          hours={hours}
-          minutes={minutes}
-        />
-        <ChooseWeekdaysDialog weekdaysOpen={weekdaysOpen} handleDismissWeekdays={handleDismissWeekdays} weekdays={weekdays} setWeekdays={setWeekdays} />
-      </View>
+
+      </ScrollView>
+      <ChooseWeekdaysDialog weekdaysOpen={weekdaysOpen} handleDismissWeekdays={handleDismissWeekdays} weekdays={weekdays} setWeekdays={setWeekdays} />
+      <TimePickerModal
+        visible={timeOpen}
+        onDismiss={handleDismissTime}
+        onConfirm={handleConfirmTime}
+        cancelLabel={"Cancel"}
+        confirmLabel={"Confirm"}
+        hours={hours}
+        minutes={minutes}
+      />
+
     </View>
   );
 };
@@ -133,12 +206,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     alignSelf: "stretch",
-    flex: 1,
+    flexGrow: 1,
     padding: 10
   },
   textBox: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    width: "100%"
   },
   textValue: {
     color: "grey"
