@@ -33,11 +33,13 @@ export default function ReminderCard(props: ReminderProps) {
   };
 
   async function createNewTriggers() {
-    const date = new Date(Date.now());
+    let date = new Date(Date.now());
     props.reminder.days.forEach(async (day: number) => {
+      console.log(day);
       date.setDate(date.getDate() - date.getDay() + day);
       date.setHours(props.reminder.hours);
       date.setMinutes(props.reminder.minutes);
+      console.log(date);
 
       const channelId = await notifee.createChannel({
         id: "default",
