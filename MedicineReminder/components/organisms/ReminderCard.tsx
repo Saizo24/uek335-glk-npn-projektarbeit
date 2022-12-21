@@ -33,15 +33,13 @@ export default function ReminderCard(props: ReminderProps) {
   };
 
   async function createNewTriggers() {
-    {
-      const date = new Date(Date.now());
-      props.reminder.days.forEach((day: number) => {
-        date.setDate(date.getDate() - date.getDay() + day);
-        date.setHours(props.reminder.hours);
-        date.setMinutes(props.reminder.minutes);
-      });
+    const date = new Date(Date.now());
+    props.reminder.days.forEach(async (day: number) => {
+      date.setDate(date.getDate() - date.getDay() + day);
+      date.setHours(props.reminder.hours);
+      date.setMinutes(props.reminder.minutes);
 
-      const channelId = notifee.createChannel({
+      const channelId = await notifee.createChannel({
         id: "default",
         name: "Default Channel",
         importance: AndroidImportance.HIGH,
@@ -59,7 +57,7 @@ export default function ReminderCard(props: ReminderProps) {
           title: props.reminder.name,
           body: props.reminder.description,
           android: {
-            channelId: "default",
+            channelId,
           },
         },
         trigger
@@ -68,7 +66,7 @@ export default function ReminderCard(props: ReminderProps) {
       notifee
         .getTriggerNotificationIds()
         .then((ids) => console.log("All trigger notifications: ", ids));
-    }
+    });
   }
 
   return (
