@@ -4,6 +4,11 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ReminderContext from "../../contexts/ReminderContext";
 
+/**
+ * We decided to take the floating action button, that is used to add new reminders, from react-native-paper
+ * and changed it for our own purpose.
+ */
+
 const OurFAB = () => {
   const navigation = useNavigation();
   const { setActiveReminder } = useContext(ReminderContext)

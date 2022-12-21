@@ -7,6 +7,11 @@ import StorageService from "../../services/StorageService";
 import { Reminder } from "../../types/Reminder.model";
 import ReminderContext from "../../contexts/ReminderContext";
 
+/**
+ * Once a user opens the application, this page will be displayed. The user will see his/her reminders that they set previously.
+ * If the user has not yet set any reminders, the only thing shown will be a floating action button to add reminders.
+ * All Reminders are displayed in order, sorted by time and stored in the local storage of the phone.
+ */
 export default function LandingPage() {
 
   const { reminders } = useContext(ReminderContext)
