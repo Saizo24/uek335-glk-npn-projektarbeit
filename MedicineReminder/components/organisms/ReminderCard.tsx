@@ -75,7 +75,7 @@ export default function ReminderCard(props: ReminderProps) {
     <Card
       style={styles.card}
       onPress={() => {
-        navigation.navigate("Edit Reminder", props.reminder);
+        navigation.navigate("Edit Reminder", { reminder: props.reminder });
       }}
     >
       <View style={styles.layout}>
