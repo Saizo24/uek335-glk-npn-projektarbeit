@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, Paragraph, Switch, Title } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import { Reminder } from "../../types/Reminder.model";
-import { WeekdayModel } from "../types/weekday.model";
+import { WeekdayModel } from "../../types/weekday.model";
 import { useNavigation } from "@react-navigation/native";
 
 type ReminderProps = {

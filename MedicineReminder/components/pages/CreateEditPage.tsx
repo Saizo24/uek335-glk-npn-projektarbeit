@@ -9,15 +9,22 @@ import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekda
 import { Reminder } from "../../types/Reminder.model";
 
 type CreateEditPageProp = {
-  type: "New" | "Edit"
+
 }
 
 export const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-const CreateEditPage = ({ type }: CreateEditPageProp) => {
+/**
+ * This functional component 
+ * 
+ * @param param0 
+ * @returns 
+ */
+const CreateEditPage = ({ }: CreateEditPageProp) => {
   const route = useRoute()
   const reminder: Reminder = route.params.reminder
 
+  //State variables for reminder
   const [minutes, setMinutes] = React.useState(reminder ? reminder.minutes : 0);
   const [hours, setHours] = React.useState(reminder ? reminder.hours : 0);
   const [weekdays, setWeekdays] = React.useState(reminder ? reminder.days : []);
@@ -25,10 +32,14 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   const [reminderTitle, setReminderTitle] = React.useState(reminder ? reminder.name : "")
   const [reminderDescription, setReminderDescription] = React.useState(reminder ? reminder.description : "")
 
+  //State booleans for dialog
   const [timeDialogOpen, setTimeDialogOpen] = React.useState(false);
   const [weekdaysDialogOpen, setWeekdaysDialogOpen] = React.useState(false)
 
+  //State variable for weekday shorts which are displayed in the "Repeat on" field
   const [weekdayNameShorts, setWeekdayNameShorts] = React.useState<String[]>([])
+
+  //State booleans for displaying input fields
   const [repeatInputActive, setRepeatInputActive] = React.useState(false)
   const [reminderTitleInputActive, setReminderTitleInputActive] = React.useState(false)
   const [descriptionInputActive, setDescriptionInputActive] = React.useState(false)
@@ -36,43 +47,63 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   const navigation = useNavigation()
 
   React.useEffect(() => {
-    generateWeekdayNames()
+    generateWeekdayNames(weekdays)
     if (weekdays.length === 0) {
       setRepeatCount(0)
     }
   }, [weekdays])
 
+  /**
+   * Opens the timepicker dialog
+   */
   const handleOpenChooseTime = () => {
     setTimeDialogOpen(true);
   };
 
+  /**
+   * Saves the chosen time in the timepicker dialog
+   * and closes it
+   * @param hours This value takes the hours of the chosen time as a number
+   * @param minutes This value takes the minutes of the chosen time as a number
+   */
   const handleConfirmTime = ({ hours, minutes }) => {
     setHours(hours);
     setMinutes(minutes);
     setTimeDialogOpen(false);
   };
 
+  /**
+   * Closes the timepicker dialog
+   */
   const handleDismissTime = () => {
     setTimeDialogOpen(false);
   };
 
+  /**
+   * Opens the chooseWeekday dialog
+   */
   const handleOpenChooseWeekdays = () => {
     setWeekdaysDialogOpen(true);
   };
 
+  /**
+   * Closes the chooseWeekday dialog
+   */
   const handleDismissWeekdays = () => {
     setWeekdaysDialogOpen(false)
   }
 
-  const generateWeekdayNames = () => {
+  /**
+   * 
+   * @param weekdayArray 
+   */
+  const generateWeekdayNames = (weekdayArray: number[]) => {
     const selectedWeekdayNames: string[] = []
-    weekdays.forEach((weekday) => selectedWeekdayNames.push(weekdayNames[weekday].substring(0, 2)))
+    weekdayArray.forEach((weekday) => selectedWeekdayNames.push(weekdayNames[weekday].substring(0, 2)))
     setWeekdayNameShorts(selectedWeekdayNames)
   }
 
   return (
-
-
     <KeyboardAwareScrollView
       scrollEnabled={true}
       contentContainerStyle={{ ...styles.view, flexGrow: 1 }}

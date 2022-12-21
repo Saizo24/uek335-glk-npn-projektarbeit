@@ -17,10 +17,10 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Reminder" component={LandingPage} />
         <Stack.Screen name="New Reminder">
-          {() => <CreateEditPage type="New" />}
+          {() => <CreateEditPage />}
         </Stack.Screen>
         <Stack.Screen name="Edit Reminder">
-          {() => <CreateEditPage type="Edit" />}
+          {() => <CreateEditPage />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
