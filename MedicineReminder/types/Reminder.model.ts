@@ -4,5 +4,6 @@ export type Reminder = {
     minutes: number
     hours: number
     repeatCount: number
+    description: string
     days: number[]
 }

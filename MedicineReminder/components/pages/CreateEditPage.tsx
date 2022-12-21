@@ -1,35 +1,37 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { Moment } from "moment";
 import React from "react";
 import { View, StyleSheet, TouchableOpacity, Keyboard, ScrollView } from "react-native";
 import { Button, Paragraph, TextInput } from "react-native-paper";
 import { TimePickerModal } from "react-native-paper-dates";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekdaysDialog"
-import { Reminder } from "../types/Reminder.model";
+import { Reminder } from "../../types/Reminder.model";
 
 type CreateEditPageProp = {
-  type: string
-  reminder: Reminder
+  type: "New" | "Edit"
 }
 
 export const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 const CreateEditPage = ({ type }: CreateEditPageProp) => {
+  const route = useRoute()
+  const reminder: Reminder = route.params.reminder
 
-  const [minutes, setMinutes] = React.useState(0)
-  const [hours, setHours] = React.useState(0)
-  const [timeOpen, setTimeOpen] = React.useState(false);
-  const [weekdaysOpen, setWeekdaysOpen] = React.useState(false)
-  const [weekdays, setWeekdays] = React.useState([1, 4]);
+  const [minutes, setMinutes] = React.useState(reminder ? reminder.minutes : 0);
+  const [hours, setHours] = React.useState(reminder ? reminder.hours : 0);
+  const [weekdays, setWeekdays] = React.useState(reminder ? reminder.days : []);
+  const [repeatCount, setRepeatCount] = React.useState<number>(reminder ? reminder.repeatCount : 0)
+  const [reminderTitle, setReminderTitle] = React.useState(reminder ? reminder.name : "")
+  const [reminderDescription, setReminderDescription] = React.useState(reminder ? reminder.description : "")
+
+  const [timeDialogOpen, setTimeDialogOpen] = React.useState(false);
+  const [weekdaysDialogOpen, setWeekdaysDialogOpen] = React.useState(false)
+
   const [weekdayNameShorts, setWeekdayNameShorts] = React.useState<String[]>([])
-  const [repeatCount, setRepeatCount] = React.useState<number>(0)
   const [repeatInputActive, setRepeatInputActive] = React.useState(false)
-  const [reminderTitle, setReminderTitle] = React.useState("")
   const [reminderTitleInputActive, setReminderTitleInputActive] = React.useState(false)
   const [descriptionInputActive, setDescriptionInputActive] = React.useState(false)
-  const [reminderDescription, setReminderDescription] = React.useState("")
 
   const navigation = useNavigation()
 
@@ -41,25 +43,25 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   }, [weekdays])
 
   const handleOpenChooseTime = () => {
-    setTimeOpen(true)
-  }
+    setTimeDialogOpen(true);
+  };
 
   const handleConfirmTime = ({ hours, minutes }) => {
-    setHours(hours)
-    setMinutes(minutes)
-    setTimeOpen(false)
-  }
+    setHours(hours);
+    setMinutes(minutes);
+    setTimeDialogOpen(false);
+  };
 
   const handleDismissTime = () => {
-    setTimeOpen(false)
-  }
+    setTimeDialogOpen(false);
+  };
 
   const handleOpenChooseWeekdays = () => {
-    setWeekdaysOpen(true)
-  }
+    setWeekdaysDialogOpen(true);
+  };
 
   const handleDismissWeekdays = () => {
-    setWeekdaysOpen(false)
+    setWeekdaysDialogOpen(false)
   }
 
   const generateWeekdayNames = () => {
@@ -92,16 +94,29 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
           </Button>
         </View>
         <View style={styles.timeView}>
-          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-            <Paragraph style={styles.timeText}>{String(hours).padStart(2, '0')}</Paragraph>
+          <TouchableOpacity
+            style={styles.timeBox}
+            onPress={handleOpenChooseTime}
+          >
+            <Paragraph style={styles.timeText}>
+              {String(hours).padStart(2, "0")}
+            </Paragraph>
           </TouchableOpacity>
           <Paragraph style={styles.timeText}>:</Paragraph>
-          <TouchableOpacity style={styles.timeBox} onPress={handleOpenChooseTime}>
-            <Paragraph style={styles.timeText}>{String(minutes).padStart(2, '0')}</Paragraph>
+          <TouchableOpacity
+            style={styles.timeBox}
+            onPress={handleOpenChooseTime}
+          >
+            <Paragraph style={styles.timeText}>
+              {String(minutes).padStart(2, "0")}
+            </Paragraph>
           </TouchableOpacity>
         </View>
-        <View style={{ ...styles.textDataBox }}>
-          <TouchableOpacity style={styles.textBox} onPress={handleOpenChooseWeekdays}>
+        <View style={styles.textDataBox}>
+          <TouchableOpacity
+            style={styles.textBox}
+            onPress={handleOpenChooseWeekdays}
+          >
             <Paragraph>Repeat on:</Paragraph>
             <Paragraph style={styles.textValue}>{
               weekdayNameShorts.length !== 0 ? weekdayNameShorts.join(", ") : "Never"
@@ -187,9 +202,9 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <ChooseWeekdaysDialog weekdaysOpen={weekdaysOpen} handleDismissWeekdays={handleDismissWeekdays} weekdays={weekdays} setWeekdays={setWeekdays} />
+      <ChooseWeekdaysDialog weekdaysOpen={weekdaysDialogOpen} handleDismissWeekdays={handleDismissWeekdays} weekdays={weekdays} setWeekdays={setWeekdays} />
       <TimePickerModal
-        visible={timeOpen}
+        visible={timeDialogOpen}
         onDismiss={handleDismissTime}
         onConfirm={handleConfirmTime}
         cancelLabel={"Cancel"}
@@ -229,12 +244,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "pink",
     margin: 10,
-
   },
   timeText: {
     fontSize: 30,
     lineHeight: 37,
-
   },
   textDataBox: {
 

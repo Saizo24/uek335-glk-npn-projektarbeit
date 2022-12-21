@@ -4,8 +4,7 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const OurFAB = () => {
-
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   return (
     <FAB
@@ -13,7 +12,7 @@ const OurFAB = () => {
       style={styles.fab}
       size="medium"
       onPress={() => {
-        navigation.navigate('New Reminder')
+        navigation.navigate("New Reminder");
       }}
     ></FAB>
   );
