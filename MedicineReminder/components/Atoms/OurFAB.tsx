@@ -3,6 +3,11 @@ import { FAB } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
+/**
+ * We decided to take the floating action button, that is used to add new reminders, from react-native-paper
+ * and changed it for our own purpose.
+ */
+
 const OurFAB = () => {
   const navigation = useNavigation();
 

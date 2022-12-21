@@ -6,6 +6,11 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import StorageService from "../../services/StorageService";
 import { Reminder } from "../../types/Reminder.model";
 
+/**
+ * Once a user opens the application, this page will be displayed. The user will see his/her reminders that they set previously.
+ * If the user has not yet set any reminders, the only thing shown will be a floating action button to add reminders.
+ * All Reminders are displayed in order, sorted by time and stored in the local storage of the phone.
+ */
 export default function LandingPage() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
 
@@ -43,10 +48,10 @@ export default function LandingPage() {
       id: "3",
       name: "alles",
       description: "ich han alles weh",
-      minutes: 29,
-      hours: 17,
+      minutes: 21,
+      hours: 16,
       repeatCount: 1,
-      days: [6],
+      days: [3],
     },
   ];
 

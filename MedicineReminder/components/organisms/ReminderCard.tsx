@@ -4,13 +4,26 @@ import { StyleSheet, View } from "react-native";
 import { Reminder } from "../../types/Reminder.model";
 import { WeekdayModel } from "../../types/weekday.model";
 import { useNavigation } from "@react-navigation/native";
-import notifee, { TimestampTrigger, TriggerType } from "@notifee/react-native";
+import notifee, {
+  AndroidImportance,
+  TimestampTrigger,
+  TriggerType,
+} from "@notifee/react-native";
 
 type ReminderProps = {
   reminder: Reminder;
   switchState: boolean;
 };
-
+/**
+ * This component serves as a single reminder for a medicine. It includes following parameters
+ *
+ * @param reminder : With all the necessary properties, such as time, name and description
+ * @param switchState : A state to know wether or not the switch and therefore the reminder is turned on
+ *
+ * In this component, a trigger will be set if the switch is flipped to the "on" state and will be removed if it is switched to the "off" state
+ * Other than that, it displays the title of the reminder, the time it is set to go off and the dates it should trigger on.
+ *
+ */
 export default function ReminderCard(props: ReminderProps) {
   const navigation = useNavigation();
   const [isSwitchOn, setIsSwitchOn] = useState(false);
@@ -27,6 +40,13 @@ export default function ReminderCard(props: ReminderProps) {
         date.setHours(props.reminder.hours);
         date.setMinutes(props.reminder.minutes);
       });
+
+      const channelId = notifee.createChannel({
+        id: "default",
+        name: "Default Channel",
+        importance: AndroidImportance.HIGH,
+      });
+
       // Create a time-based trigger
       const trigger: TimestampTrigger = {
         type: TriggerType.TIMESTAMP,
@@ -39,12 +59,15 @@ export default function ReminderCard(props: ReminderProps) {
           title: props.reminder.name,
           body: props.reminder.description,
           android: {
-            channelId: "your-channel-id",
+            channelId: "default",
           },
         },
         trigger
       );
       console.log(trigger);
+      notifee
+        .getTriggerNotificationIds()
+        .then((ids) => console.log("All trigger notifications: ", ids));
     }
   }
 
