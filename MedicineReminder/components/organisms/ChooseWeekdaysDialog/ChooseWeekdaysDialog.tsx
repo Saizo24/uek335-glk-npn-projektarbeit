@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Button, Checkbox, Dialog, List, Paragraph, Portal, Provider } from 'react-native-paper'
+import { Button, Dialog, Paragraph } from 'react-native-paper'
 import WeekdayCheckbox from '../../molecules/weekdayCheckbox/WeekdayCheckbox'
 import { weekdayNames } from '../../pages/CreateEditPage'
 

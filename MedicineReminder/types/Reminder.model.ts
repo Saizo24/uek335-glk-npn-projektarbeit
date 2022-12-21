@@ -5,5 +5,6 @@ export type Reminder = {
     hours: number
     repeatCount: number
     description: string
+    active: boolean
     days: number[]
 }

@@ -1,67 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import OurFAB from "../Atoms/OurFAB";
 import ReminderCard from "../organisms/ReminderCard";
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, View } from "react-native";
 import StorageService from "../../services/StorageService";
 import { Reminder } from "../../types/Reminder.model";
+import ReminderContext from "../../contexts/ReminderContext";
 
 export default function LandingPage() {
-  const [reminders, setReminders] = useState<Reminder[]>([]);
+
+  const { reminders } = useContext(ReminderContext)
+  const [shownReminders, setShownReminders] = useState<Reminder[]>([]);
 
   useEffect(() => {
     StorageService.getFullStorage().then((value) => {
-      //setReminders(JSON.parse(value));
-      setReminders(exampleReminders);
+      setShownReminders(JSON.parse(value));
     });
-  }, []);
+  }, [reminders]);
 
   const generateTimeInMinutes = (hours: number, minutes: number) => {
     return hours * 60 + minutes;
   };
 
-  const exampleReminders: Reminder[] = [
-    {
-      id: "1",
-      name: "Chopfweh",
-      minutes: 30,
-      hours: 12,
-      repeatCount: 4,
-      description: "1x Chopfweh",
-      days: [0, 3],
-    },
-    {
-      id: "2",
-      name: "Buchweh",
-      minutes: 35,
-      hours: 14,
-      repeatCount: 2,
-      description: "1x Buchweh",
-      days: [0, 1, 2, 3, 4, 5, 6],
-    },
-    {
-      id: "3",
-      name: "alles",
-      minutes: 0,
-      hours: 8,
-      repeatCount: 1,
-      description: "1x aspirin",
-      days: [6]
-    },
-  ];
-
   return (
     <View style={styles.view}>
       <ScrollView style={styles.scrollView}>
         <StatusBar style="auto" />
-        {reminders
+        {shownReminders
           .sort(
             (a, b) =>
               generateTimeInMinutes(a.hours, a.minutes) -
               generateTimeInMinutes(b.hours, b.minutes)
           )
-          .map((reminder: Reminder) => (
-            <ReminderCard reminder={reminder} switchState={false} />
+          .map((reminder: Reminder, index) => (
+            <ReminderCard key={index} reminder={reminder} switchState={reminder.active} />
           ))}
       </ScrollView>
       <OurFAB />

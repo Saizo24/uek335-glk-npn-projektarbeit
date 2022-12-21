@@ -1,15 +1,16 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, TouchableOpacity, Keyboard, ScrollView } from "react-native";
 import { Button, Paragraph, TextInput } from "react-native-paper";
 import { TimePickerModal } from "react-native-paper-dates";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekdaysDialog"
 import { Reminder } from "../../types/Reminder.model";
+import ReminderContext from "../../contexts/ReminderContext";
 
 type CreateEditPageProp = {
-
+  type: "New" | "Edit"
 }
 
 export const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -20,29 +21,27 @@ export const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
  * @param param0 
  * @returns 
  */
-const CreateEditPage = ({ }: CreateEditPageProp) => {
-  const route = useRoute()
-  const reminder: Reminder = route.params.reminder
+const CreateEditPage = ({ type }: CreateEditPageProp) => {
+  const { reminders, activeReminder, saveReminder, updateDeleteReminder } = useContext(ReminderContext)
 
   //State variables for reminder
-  const [minutes, setMinutes] = React.useState(reminder ? reminder.minutes : 0);
-  const [hours, setHours] = React.useState(reminder ? reminder.hours : 0);
-  const [weekdays, setWeekdays] = React.useState(reminder ? reminder.days : []);
-  const [repeatCount, setRepeatCount] = React.useState<number>(reminder ? reminder.repeatCount : 0)
-  const [reminderTitle, setReminderTitle] = React.useState(reminder ? reminder.name : "")
-  const [reminderDescription, setReminderDescription] = React.useState(reminder ? reminder.description : "")
+  const [minutes, setMinutes] = React.useState(activeReminder ? activeReminder.minutes : 0);
+  const [hours, setHours] = React.useState(activeReminder ? activeReminder.hours : 0);
+  const [weekdays, setWeekdays] = React.useState(activeReminder ? activeReminder.days : []);
+  const [repeatCount, setRepeatCount] = React.useState<number>(activeReminder ? activeReminder.repeatCount : 0)
+  const [reminderTitle, setReminderTitle] = React.useState(activeReminder ? activeReminder.name : "")
+  const [reminderDescription, setReminderDescription] = React.useState(activeReminder ? activeReminder.description : "")
 
   //State booleans for dialog
   const [timeDialogOpen, setTimeDialogOpen] = React.useState(false);
   const [weekdaysDialogOpen, setWeekdaysDialogOpen] = React.useState(false)
 
   //State variable for weekday shorts which are displayed in the "Repeat on" field
-  const [weekdayNameShorts, setWeekdayNameShorts] = React.useState<String[]>([])
+  const [weekdayNameShorts, setWeekdayNameShorts] = React.useState<string[]>([])
 
   //State booleans for displaying input fields
   const [repeatInputActive, setRepeatInputActive] = React.useState(false)
   const [reminderTitleInputActive, setReminderTitleInputActive] = React.useState(false)
-  const [descriptionInputActive, setDescriptionInputActive] = React.useState(false)
 
   const navigation = useNavigation()
 
@@ -103,6 +102,32 @@ const CreateEditPage = ({ }: CreateEditPageProp) => {
     setWeekdayNameShorts(selectedWeekdayNames)
   }
 
+  const handleSaveUpdateReminder = () => {
+    let newId = 0
+    reminders.forEach((reminder) => newId = newId < Number(reminder.id) + 1 ? Number(reminder.id) + 1 : newId)
+    const newReminder: Reminder = {
+      hours,
+      minutes,
+      repeatCount,
+      id: type === "New" ? newId.toString() : activeReminder.id,
+      active: true,
+      name: reminderTitle,
+      description: reminderDescription,
+      days: weekdays,
+    }
+    if (type === "New") {
+      saveReminder(newReminder).then(() => {
+        navigation.goBack()
+      })
+    }
+
+    if (type === "Edit") {
+      updateDeleteReminder(newReminder, "update").then(() => {
+        navigation.goBack()
+      })
+    }
+  }
+
   return (
     <KeyboardAwareScrollView
       scrollEnabled={true}
@@ -120,7 +145,9 @@ const CreateEditPage = ({ }: CreateEditPageProp) => {
           }}>
             Cancel
           </Button>
-          <Button>
+          <Button onPress={() => {
+            handleSaveUpdateReminder()
+          }}>
             Save
           </Button>
         </View>
@@ -194,7 +221,6 @@ const CreateEditPage = ({ }: CreateEditPageProp) => {
                 }}
                 onSubmitEditing={() => {
                   setReminderTitleInputActive(false)
-                  setDescriptionInputActive(true)
                 }}
                 onBlur={() => {
                   setReminderTitleInputActive(false)
@@ -221,11 +247,7 @@ const CreateEditPage = ({ }: CreateEditPageProp) => {
               onChangeText={(value) => {
                 setReminderDescription(value)
               }}
-              onFocus={() => {
-                setDescriptionInputActive(true)
-              }}
               onBlur={() => {
-                setDescriptionInputActive(false)
                 Keyboard.dismiss()
               }}
             />

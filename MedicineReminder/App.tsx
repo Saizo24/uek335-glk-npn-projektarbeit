@@ -5,6 +5,7 @@ import LandingPage from "./components/pages/LandingPage";
 import CreateEditPage from "./components/pages/CreateEditPage";
 import { de, enGB, registerTranslation } from "react-native-paper-dates";
 import "./i18n/config";
+import { ReminderContextProvider } from "./contexts/ReminderContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,16 +14,18 @@ registerTranslation("de", de);
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Reminder" component={LandingPage} />
-        <Stack.Screen name="New Reminder">
-          {() => <CreateEditPage />}
-        </Stack.Screen>
-        <Stack.Screen name="Edit Reminder">
-          {() => <CreateEditPage />}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ReminderContextProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Reminder" component={LandingPage} />
+          <Stack.Screen name="New Reminder">
+            {() => <CreateEditPage type="New" />}
+          </Stack.Screen>
+          <Stack.Screen name="Edit Reminder">
+            {() => <CreateEditPage type="Edit" />}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ReminderContextProvider>
   );
 }

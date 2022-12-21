@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FAB } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import ReminderContext from "../../contexts/ReminderContext";
 
 const OurFAB = () => {
   const navigation = useNavigation();
+  const { setActiveReminder } = useContext(ReminderContext)
 
   return (
     <FAB
@@ -12,6 +14,7 @@ const OurFAB = () => {
       style={styles.fab}
       size="medium"
       onPress={() => {
+        setActiveReminder(null)
         navigation.navigate("New Reminder");
       }}
     ></FAB>
