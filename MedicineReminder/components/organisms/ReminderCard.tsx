@@ -6,6 +6,7 @@ import { WeekdayModel } from "../../types/weekday.model";
 import { useNavigation } from "@react-navigation/native";
 import notifee, {
   AndroidImportance,
+  EventType,
   TimestampTrigger,
   TriggerType,
 } from "@notifee/react-native";
@@ -71,10 +72,35 @@ export default function ReminderCard(props: ReminderProps) {
           },
           trigger
         );
-        console.log(trigger);
-        notifee
-          .getTriggerNotificationIds()
-          .then((ids) => console.log("All trigger notifications: ", ids));
+
+        notifee.onForegroundEvent(({ type, detail }) => {
+          const { notification } = detail;
+
+          switch (type) {
+            case EventType.DISMISSED:
+              console.log("User dismissed notification", detail.notification);
+              break;
+          }
+        });
+
+        notifee.onBackgroundEvent(async ({ type, detail }) => {
+          const { notification, pressAction } = detail;
+
+          switch (type) {
+            case EventType.PRESS:
+              // handle the notification and do something
+              break;
+          }
+          // Check if the user pressed the "Mark as read" action
+          if (
+            type === EventType.ACTION_PRESS &&
+            pressAction.id === "mark-as-read"
+          ) {
+            // Update external API
+            // Remove the notification
+            await notifee.cancelNotification(notification.id);
+          }
+        });
       });
     }
   };
