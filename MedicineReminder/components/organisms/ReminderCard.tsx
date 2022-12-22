@@ -21,7 +21,8 @@ type ReminderProps = {
  *
  */
 export default function ReminderCard(props: ReminderProps) {
-  const { setActiveReminder, updateDeleteReminder, createNewTriggers } = useContext(ReminderContext)
+  const { setActiveReminder, updateDeleteReminder, createNewTriggers } =
+    useContext(ReminderContext);
   const navigation = useNavigation();
   const [isSwitchOn, setIsSwitchOn] = useState(props.switchState);
   const onToggleSwitch = () => {
@@ -29,11 +30,11 @@ export default function ReminderCard(props: ReminderProps) {
       setIsSwitchOn(!isSwitchOn);
       createNewTriggers(props.reminder);
       if (!isSwitchOn) {
-        updateDeleteReminder(props.reminder, "update")
+        updateDeleteReminder(props.reminder, "update");
       }
-    };
-  }
-  const [deleteActive, setDeleteActive] = useState(false)
+    }
+  };
+  const [deleteActive, setDeleteActive] = useState(false);
 
   return (
     <TouchableWithoutFeedback
@@ -112,5 +113,3 @@ const styles = StyleSheet.create({
   cardAction: { flex: 1, right: 0, top: 0, justifyContent: "center" },
   switch: {},
 });
-
-

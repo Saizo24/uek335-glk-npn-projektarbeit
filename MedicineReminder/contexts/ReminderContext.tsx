@@ -17,7 +17,7 @@ export type ReminderContextType = {
     reminder: Reminder,
     type: "delete" | "update"
   ) => Promise<void>;
-  createNewTriggers: (reminder: Reminder) => Promise<void>
+  createNewTriggers: (reminder: Reminder) => Promise<void>;
 };
 
 const noContextProviderFound = () => {
@@ -30,8 +30,8 @@ const defaultContextValue: ReminderContextType = {
   setActiveReminder: noContextProviderFound,
   saveReminder: noContextProviderFound,
   updateDeleteReminder: noContextProviderFound,
-  createNewTriggers: noContextProviderFound
-}
+  createNewTriggers: noContextProviderFound,
+};
 
 const ReminderContext = createContext<ReminderContextType>(defaultContextValue);
 export default ReminderContext;
@@ -45,25 +45,6 @@ export const ReminderContextProvider = ({
 }: ReminderContextProviderProps) => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [activeReminder, setActiveReminder] = useState<Nullable<Reminder>>();
-
-  useEffect(() => {
-    StorageService.getFullStorage().then((value) => {
-      if (value) {
-        setReminders(JSON.parse(value));
-      }
-      if (!value) {
-        setReminders([]);
-      }
-    });
-  }, []);
-
-  const saveReminder = async (reminder: Reminder) => {
-    const newReminders = Array.from(reminders);
-    newReminders.push(reminder);
-    StorageService.storeDataInStorage(JSON.stringify(newReminders)).then(() => {
-      setReminders(newReminders);
-    });
-  };
 
   const updateDeleteReminder = async (
     reminder: Reminder,
@@ -82,16 +63,34 @@ export const ReminderContextProvider = ({
     if (type === "update") {
       newReminders.splice(index, 1, reminder);
     }
-  }
+    StorageService.storeDataInStorage(JSON.stringify(newReminders));
+  };
+
+  useEffect(() => {
+    StorageService.getFullStorage().then((value) => {
+      if (value) {
+        setReminders(JSON.parse(value));
+      }
+      if (!value) {
+        setReminders([]);
+      }
+    });
+  }, [reminders]);
+
+  const saveReminder = async (reminder: Reminder) => {
+    const newReminders = Array.from(reminders);
+    newReminders.push(reminder);
+    StorageService.storeDataInStorage(JSON.stringify(newReminders)).then(() => {
+      setReminders(newReminders);
+    });
+  };
 
   async function createNewTriggers(reminder: Reminder) {
     let date = new Date(Date.now());
     reminder.days.forEach(async (day: number) => {
-      console.log(day);
       date.setDate(date.getDate() - date.getDay() + day);
       date.setHours(reminder.hours);
       date.setMinutes(reminder.minutes);
-      console.log(date);
 
       const channelId = await notifee.createChannel({
         id: "default",
@@ -102,7 +101,7 @@ export const ReminderContextProvider = ({
       // Create a time-based trigger
       const trigger: TimestampTrigger = {
         type: TriggerType.TIMESTAMP,
-        timestamp: date.getTime(), // fire at 11:10am (10 minutes before meeting)
+        timestamp: date.getTime(),
       };
 
       // Create a trigger notification
@@ -116,10 +115,6 @@ export const ReminderContextProvider = ({
         },
         trigger
       );
-      console.log(trigger);
-      notifee
-        .getTriggerNotificationIds()
-        .then((ids) => console.log("All trigger notifications: ", ids));
     });
   }
 
@@ -131,10 +126,10 @@ export const ReminderContextProvider = ({
         setActiveReminder,
         saveReminder,
         updateDeleteReminder,
-        createNewTriggers
+        createNewTriggers,
       }}
     >
       {children}
     </ReminderContext.Provider>
-  )
-}
+  );
+};
