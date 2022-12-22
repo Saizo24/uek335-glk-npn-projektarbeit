@@ -23,7 +23,7 @@ const getFullStorage = async () => {
       return value;
     }
   } catch (e) {
-    console.log("No Data found")
+    console.error("No Data found")
   }
 };
 
