@@ -4,11 +4,6 @@ import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { Reminder } from "../../types/Reminder.model";
 import { WeekdayModel } from "../../types/weekday.model";
 import { useNavigation } from "@react-navigation/native";
-import notifee, {
-  AndroidImportance,
-  TimestampTrigger,
-  TriggerType,
-} from "@notifee/react-native";
 import ReminderContext from "../../contexts/ReminderContext";
 
 type ReminderProps = {
@@ -26,54 +21,17 @@ type ReminderProps = {
  *
  */
 export default function ReminderCard(props: ReminderProps) {
-  const { setActiveReminder, updateDeleteReminder, saveReminder } = useContext(ReminderContext)
+  const { setActiveReminder, updateDeleteReminder, createNewTriggers } = useContext(ReminderContext)
   const navigation = useNavigation();
   const [isSwitchOn, setIsSwitchOn] = useState(props.switchState);
   const onToggleSwitch = () => {
     {
       setIsSwitchOn(!isSwitchOn);
-      createNewTriggers();
+      createNewTriggers(props.reminder);
+      if (!isSwitchOn) {
+        updateDeleteReminder(props.reminder, "update")
+      }
     };
-
-    async function createNewTriggers() {
-      let date = new Date(Date.now());
-      props.reminder.days.forEach(async (day: number) => {
-        console.log(day);
-        date.setDate(date.getDate() - date.getDay() + day);
-        date.setHours(props.reminder.hours);
-        date.setMinutes(props.reminder.minutes);
-        console.log(date);
-
-        const channelId = await notifee.createChannel({
-          id: "default",
-          name: "Default Channel",
-          importance: AndroidImportance.HIGH,
-        });
-
-        // Create a time-based trigger
-        const trigger: TimestampTrigger = {
-          type: TriggerType.TIMESTAMP,
-          timestamp: date.getTime(), // fire at 11:10am (10 minutes before meeting)
-        };
-
-        // Create a trigger notification
-        await notifee.createTriggerNotification(
-          {
-            title: props.reminder.name,
-            body: props.reminder.description,
-            android: {
-              channelId,
-            },
-          },
-          trigger
-        );
-        console.log(trigger);
-        notifee
-          .getTriggerNotificationIds()
-          .then((ids) => console.log("All trigger notifications: ", ids));
-      });
-    }
-    saveReminder(props.reminder)
   }
   const [deleteActive, setDeleteActive] = useState(false)
 
@@ -156,3 +114,5 @@ const styles = StyleSheet.create({
   cardAction: { flex: 1, right: 0, top: 0, justifyContent: "center" },
   switch: {},
 });
+
+

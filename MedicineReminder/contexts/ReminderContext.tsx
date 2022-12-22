@@ -2,6 +2,11 @@ import { createContext, useEffect, useState } from "react";
 import StorageService from "../services/StorageService";
 import { Nullable } from "../types/Nullable";
 import { Reminder } from "../types/Reminder.model";
+import notifee, {
+    AndroidImportance,
+    TimestampTrigger,
+    TriggerType,
+} from "@notifee/react-native";
 
 export type ReminderContextType = {
     reminders: Reminder[],
@@ -9,6 +14,7 @@ export type ReminderContextType = {
     setActiveReminder: (reminder: Reminder | null) => void
     saveReminder: (reminder: Reminder) => Promise<void>
     updateDeleteReminder: (reminder: Reminder, type: "delete" | "update") => Promise<void>
+    createNewTriggers: (reminder: Reminder) => Promise<void>
 }
 
 const noContextProviderFound = () => {
@@ -21,6 +27,7 @@ const defaultContextValue: ReminderContextType = {
     setActiveReminder: noContextProviderFound,
     saveReminder: noContextProviderFound,
     updateDeleteReminder: noContextProviderFound,
+    createNewTriggers: noContextProviderFound
 }
 
 const ReminderContext = createContext<ReminderContextType>(defaultContextValue);
@@ -71,6 +78,45 @@ export const ReminderContextProvider = ({ children }: ReminderContextProviderPro
         })
     }
 
+    async function createNewTriggers(reminder: Reminder) {
+        let date = new Date(Date.now());
+        reminder.days.forEach(async (day: number) => {
+            console.log(day);
+            date.setDate(date.getDate() - date.getDay() + day);
+            date.setHours(reminder.hours);
+            date.setMinutes(reminder.minutes);
+            console.log(date);
+
+            const channelId = await notifee.createChannel({
+                id: "default",
+                name: "Default Channel",
+                importance: AndroidImportance.HIGH,
+            });
+
+            // Create a time-based trigger
+            const trigger: TimestampTrigger = {
+                type: TriggerType.TIMESTAMP,
+                timestamp: date.getTime(), // fire at 11:10am (10 minutes before meeting)
+            };
+
+            // Create a trigger notification
+            await notifee.createTriggerNotification(
+                {
+                    title: reminder.name,
+                    body: reminder.description,
+                    android: {
+                        channelId,
+                    },
+                },
+                trigger
+            );
+            console.log(trigger);
+            notifee
+                .getTriggerNotificationIds()
+                .then((ids) => console.log("All trigger notifications: ", ids));
+        });
+    }
+
     return (
         <ReminderContext.Provider
             value={{
@@ -79,6 +125,7 @@ export const ReminderContextProvider = ({ children }: ReminderContextProviderPro
                 setActiveReminder,
                 saveReminder,
                 updateDeleteReminder,
+                createNewTriggers
             }}
         >
             {children}
