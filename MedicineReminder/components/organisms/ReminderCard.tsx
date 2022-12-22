@@ -36,6 +36,11 @@ export default function ReminderCard(props: ReminderProps) {
     useContext(ReminderContext);
   const navigation = useNavigation();
   const [isSwitchOn, setIsSwitchOn] = useState(props.switchState);
+
+  /**
+   * Updates our reminder on switch. It also creates triggers depending
+   * on what was chosen and when it is being switched to on.
+   */
   const onToggleSwitch = () => {
     {
       setIsSwitchOn(!isSwitchOn);

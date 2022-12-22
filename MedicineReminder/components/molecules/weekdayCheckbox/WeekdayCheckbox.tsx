@@ -9,6 +9,16 @@ type WeekdayCheckboxProps = {
     handleCheck: Function
 }
 
+/**
+ * This component is a clickable list item, displaying a day. The whole area is clickable
+ * and will check the box on tap. 
+ * 
+ * @param title String describing the day
+ * @param boxChecked Contains a boolean whether it is checked or not on loading the component
+ * @param value Number describing the day of the week. Start with 0 for sunday
+ * @param handleCheck Function for adding the value to the days array for the reminder or removing it from said array
+ * @returns functional component for a weekday
+ */
 const WeekdayCheckbox = ({ title, boxChecked, value, handleCheck }: WeekdayCheckboxProps) => {
 
     const [checked, setChecked] = React.useState(boxChecked)

@@ -15,7 +15,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import ChooseWeekdaysDialog from "../organisms/ChooseWeekdaysDialog/ChooseWeekdaysDialog";
 import { Reminder } from "../../types/Reminder.model";
 import ReminderContext from "../../contexts/ReminderContext";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type CreateEditPageProp = {
   type: "New" | "Edit";
@@ -32,10 +31,12 @@ export const weekdayNames = [
 ];
 
 /**
- * This functional component
+ * This functional component creates a new Reminder or edites an existing one, depending on the string value
+ * of "type"
  *
- * @param param0
- * @returns
+ * @param type on "New" a new Reminder will be created from the entered data. On "Edit", an existing one will be
+ * overwritten
+ * @returns functional component
  */
 const CreateEditPage = ({ type }: CreateEditPageProp) => {
   const {
@@ -47,10 +48,10 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   } = useContext(ReminderContext);
 
   //State variables for reminder
-  const [minutes, setMinutes] = React.useState(
+  const [chosenMinutes, setChosenMinutes] = React.useState(
     activeReminder ? activeReminder.minutes : 0
   );
-  const [hours, setHours] = React.useState(
+  const [chosenHours, setChosenHours] = React.useState(
     activeReminder ? activeReminder.hours : 0
   );
   const [weekdays, setWeekdays] = React.useState(
@@ -105,8 +106,8 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
    * @param minutes This value takes the minutes of the chosen time as a number
    */
   const handleConfirmTime = ({ hours, minutes }) => {
-    setHours(hours);
-    setMinutes(minutes);
+    setChosenHours(hours);
+    setChosenMinutes(minutes);
     setTimeDialogOpen(false);
   };
 
@@ -132,8 +133,9 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
   };
 
   /**
-   *
-   * @param weekdayArray
+   * Generates a string array, containing the first two letters of all chosen weekdays and
+   * saves it into the state variable "selectedWeekdayNameShorts"
+   * @param weekdayArray Number array, containing all chosen weekdays as numbers
    */
   const generateWeekdayNames = (weekdayArray: number[]) => {
     const selectedWeekdayNames: string[] = [];
@@ -143,17 +145,21 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
     setWeekdayNameShorts(selectedWeekdayNames);
   };
 
+  /**
+   * Saves or updates a reminder, depending on the type of this page. On creation of a
+   * new reminder, it will set the id of the reminder as the highest of existing ids
+   */
   const handleSaveUpdateReminder = () => {
     let newId = 0;
     reminders.forEach(
       (reminder) =>
-        (newId =
-          newId < Number(reminder.id) + 1 ? Number(reminder.id) + 1 : newId)
+      (newId =
+        newId < Number(reminder.id) + 1 ? Number(reminder.id) + 1 : newId)
     );
     const newReminder: Reminder = {
-      hours,
-      minutes,
       repeatCount,
+      hours: chosenHours,
+      minutes: chosenMinutes,
       id: type === "New" ? newId.toString() : activeReminder.id,
       active: true,
       name: reminderTitle,
@@ -217,7 +223,7 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
             <Paragraph
               style={{ ...styles.timeText, color: colors.onSecondary }}
             >
-              {String(hours).padStart(2, "0")}
+              {String(chosenHours).padStart(2, "0")}
             </Paragraph>
           </TouchableOpacity>
           <Paragraph style={styles.timeText}>:</Paragraph>
@@ -228,7 +234,7 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
             <Paragraph
               style={{ ...styles.timeText, color: colors.onSecondary }}
             >
-              {String(minutes).padStart(2, "0")}
+              {String(chosenMinutes).padStart(2, "0")}
             </Paragraph>
           </TouchableOpacity>
         </View>
@@ -349,8 +355,8 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
         onConfirm={handleConfirmTime}
         cancelLabel={"Cancel"}
         confirmLabel={"Confirm"}
-        hours={hours}
-        minutes={minutes}
+        hours={chosenHours}
+        minutes={chosenMinutes}
       />
     </KeyboardAwareScrollView>
   );

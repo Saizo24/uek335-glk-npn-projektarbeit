@@ -40,12 +40,26 @@ type ReminderContextProviderProps = {
   children: React.ReactNode;
 };
 
+/**
+ * This context handles all features concerning the reminder. It fetches all reminders from the storage and
+ * saves it in a state variable, so all child elements have access to it. It also handles the active reminder,
+ * which can be a to be created reminder or an existing one you're currently editing.
+ *  
+ */
 export const ReminderContextProvider = ({
   children,
 }: ReminderContextProviderProps) => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [activeReminder, setActiveReminder] = useState<Nullable<Reminder>>();
 
+  /**
+   * This function deletes or updates a reminder by looking at the id. It will also save the reminders into the 
+   * storage, after it is done.
+   * 
+   * @param reminder element, which is to be updated or deleted
+   * @param type On "delete", will delete the given reminder. On "update", will search for reminder
+   * with the same id and overwrites it
+   */
   const updateDeleteReminder = async (
     reminder: Reminder,
     type: "delete" | "update"
@@ -77,6 +91,11 @@ export const ReminderContextProvider = ({
     });
   }, [reminders]);
 
+  /**
+   * Saves a reminder by pushing it into the reminders array and saving it to the storage.
+   * 
+   * @param reminder element to be saved to storage
+   */
   const saveReminder = async (reminder: Reminder) => {
     const newReminders = Array.from(reminders);
     newReminders.push(reminder);
@@ -85,6 +104,12 @@ export const ReminderContextProvider = ({
     });
   };
 
+  /**
+   * This function creates triggers, depending on chosen days, time and repeat count 
+   * of the given reminder.
+   * 
+   * @param reminder contains all necessary info to create triggers for notifications
+   */
   async function createNewTriggers(reminder: Reminder) {
     let date = new Date(Date.now());
     reminder.days.forEach(async (day: number) => {

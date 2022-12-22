@@ -11,6 +11,16 @@ type ChooseWeekdaysDialogProps = {
   setWeekdays: (weekDays: number[]) => void;
 };
 
+/**
+ * This dialog lists all days of a week. It also handles all chosen weekdays of a reminder, like
+ * which days the notification is supposed to be active. On Submit, it will save it to the activereminder
+ * 
+ * @param weekdays number array, containing all chosen weekdays as numbers
+ * @param setWeekdays updates the number array, containing chosen weekdays
+ * @param weekdaysOpen boolean for showing the dialog if true
+ * @param handleDismissWeekdays function for closing the dialog
+ * @returns 
+ */
 const ChooseWeekdaysDialog = ({
   weekdays,
   setWeekdays,
@@ -21,16 +31,28 @@ const ChooseWeekdaysDialog = ({
 
   const [selectedWeekdays, setSelectedWeekdays] = React.useState(weekdays);
 
+  /**
+   * Saves the current chosen weekdays and closes the dialog 
+   */
   const handleSaveWeekdays = () => {
     setWeekdays(selectedWeekdays);
     handleDismissWeekdays();
   };
 
+  /**
+   * Resets the chosen weekdays to its original value and closes the dialog
+   */
   const handleCancelWeekdays = () => {
     handleDismissWeekdays();
     setSelectedWeekdays(weekdays);
   };
 
+  /**
+   * Function for adding or removing a chosen weekday from the weekday array.
+   * 
+   * @param check If true, the value will be added to the weekday array. If false, value will be removed
+   * @param value Number of the weekday, which should be added or removed
+   */
   const handleAddRemoveWeekDay = (check: boolean, value: number) => {
     const newWeekdays = Array.from(selectedWeekdays);
     if (check) {
