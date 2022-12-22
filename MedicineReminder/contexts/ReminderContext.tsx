@@ -4,6 +4,7 @@ import { Nullable } from "../types/Nullable";
 import { Reminder } from "../types/Reminder.model";
 import notifee, {
   AndroidImportance,
+  EventType,
   TimestampTrigger,
   TriggerType,
 } from "@notifee/react-native";
@@ -17,7 +18,7 @@ export type ReminderContextType = {
     reminder: Reminder,
     type: "delete" | "update"
   ) => Promise<void>;
-  createNewTriggers: (reminder: Reminder) => Promise<void>
+  createNewTriggers: (reminder: Reminder) => Promise<void>;
 };
 
 const noContextProviderFound = () => {
@@ -30,8 +31,8 @@ const defaultContextValue: ReminderContextType = {
   setActiveReminder: noContextProviderFound,
   saveReminder: noContextProviderFound,
   updateDeleteReminder: noContextProviderFound,
-  createNewTriggers: noContextProviderFound
-}
+  createNewTriggers: noContextProviderFound,
+};
 
 const ReminderContext = createContext<ReminderContextType>(defaultContextValue);
 export default ReminderContext;
@@ -82,7 +83,7 @@ export const ReminderContextProvider = ({
     if (type === "update") {
       newReminders.splice(index, 1, reminder);
     }
-  }
+  };
 
   async function createNewTriggers(reminder: Reminder) {
     let date = new Date(Date.now());
@@ -131,10 +132,10 @@ export const ReminderContextProvider = ({
         setActiveReminder,
         saveReminder,
         updateDeleteReminder,
-        createNewTriggers
+        createNewTriggers,
       }}
     >
       {children}
     </ReminderContext.Provider>
-  )
-}
+  );
+};
