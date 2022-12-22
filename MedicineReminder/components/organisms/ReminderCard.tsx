@@ -1,15 +1,24 @@
 import React, { useContext, useState } from "react";
-import { Card, IconButton, Paragraph, Switch, Title } from "react-native-paper";
+import {
+  Card,
+  IconButton,
+  Paragraph,
+  Switch,
+  Title,
+  useTheme,
+} from "react-native-paper";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { Reminder } from "../../types/Reminder.model";
 import { WeekdayModel } from "../../types/weekday.model";
 import { useNavigation } from "@react-navigation/native";
 import ReminderContext from "../../contexts/ReminderContext";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type ReminderProps = {
   reminder: Reminder;
   switchState: boolean;
 };
+
 /**
  * This component serves as a single reminder for a medicine. It includes following parameters
  *
@@ -21,6 +30,8 @@ type ReminderProps = {
  *
  */
 export default function ReminderCard(props: ReminderProps) {
+  const { colors } = useTheme();
+
   const { setActiveReminder, updateDeleteReminder, createNewTriggers } =
     useContext(ReminderContext);
   const navigation = useNavigation();
@@ -56,7 +67,7 @@ export default function ReminderCard(props: ReminderProps) {
         setDeleteActive(false);
       }}
     >
-      <Card style={styles.card}>
+      <Card style={{ ...styles.card, backgroundColor: colors.primary }}>
         <View style={styles.layout}>
           <IconButton
             icon={"delete"}
@@ -85,7 +96,7 @@ export default function ReminderCard(props: ReminderProps) {
             <Switch
               value={isSwitchOn}
               onValueChange={onToggleSwitch}
-              style={styles.switch}
+              color={colors.secondary}
             />
           </Card.Actions>
         </View>
@@ -99,8 +110,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
-
-    backgroundColor: "#000",
   },
   layout: {
     display: "flex",

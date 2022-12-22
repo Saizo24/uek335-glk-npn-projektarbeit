@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { FAB } from "react-native-paper";
+import { FAB, useTheme } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ReminderContext from "../../contexts/ReminderContext";
@@ -11,17 +11,19 @@ import ReminderContext from "../../contexts/ReminderContext";
 
 const OurFAB = () => {
   const navigation = useNavigation();
-  const { setActiveReminder } = useContext(ReminderContext)
+  const { setActiveReminder } = useContext(ReminderContext);
+  const { colors } = useTheme();
 
   return (
     <FAB
       icon="plus"
-      style={styles.fab}
+      style={{ ...styles.fab, backgroundColor: colors.tertiary }}
       size="medium"
       onPress={() => {
-        setActiveReminder(null)
+        setActiveReminder(null);
         navigation.navigate("New Reminder");
       }}
+      color={colors.onTertiary}
     ></FAB>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import OurFAB from "../Atoms/OurFAB";
 import ReminderCard from "../organisms/ReminderCard";
 import { StatusBar } from "expo-status-bar";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ImageBackground, ScrollView, StyleSheet, View } from "react-native";
 import StorageService from "../../services/StorageService";
 import { Reminder } from "../../types/Reminder.model";
 import ReminderContext from "../../contexts/ReminderContext";
@@ -13,8 +13,7 @@ import ReminderContext from "../../contexts/ReminderContext";
  * All Reminders are displayed in order, sorted by time and stored in the local storage of the phone.
  */
 export default function LandingPage() {
-
-  const { reminders } = useContext(ReminderContext)
+  const { reminders } = useContext(ReminderContext);
   const [shownReminders, setShownReminders] = useState<Reminder[]>([]);
 
   useEffect(() => {
@@ -29,6 +28,11 @@ export default function LandingPage() {
 
   return (
     <View style={styles.view}>
+      <ImageBackground
+        source={require("../../images/green-pharmacy-symbol.png")}
+        resizeMode="contain"
+        style={styles.imageBackground}
+      ></ImageBackground>
       <ScrollView style={styles.scrollView}>
         <StatusBar style="auto" />
         {shownReminders
@@ -38,7 +42,11 @@ export default function LandingPage() {
               generateTimeInMinutes(b.hours, b.minutes)
           )
           .map((reminder: Reminder, index) => (
-            <ReminderCard key={index} reminder={reminder} switchState={reminder.active} />
+            <ReminderCard
+              key={index}
+              reminder={reminder}
+              switchState={reminder.active}
+            />
           ))}
       </ScrollView>
       <OurFAB />
@@ -47,25 +55,21 @@ export default function LandingPage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    flex: 1,
-    marginTop: "15%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#aaa",
-    fontSize: 25,
-  },
   view: {
     alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
   },
   scrollView: {
     height: "100%",
     width: "100%",
+  },
+  imageBackground: {
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    opacity: 0.5,
+    paddingHorizontal: 30,
+    marginHorizontal: 30,
+    transform: [{ translateX: 30 }],
   },
 });

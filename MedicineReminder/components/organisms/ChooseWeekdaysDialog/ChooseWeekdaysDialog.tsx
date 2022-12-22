@@ -1,48 +1,54 @@
-import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { Button, Dialog, Paragraph } from 'react-native-paper'
-import WeekdayCheckbox from '../../molecules/weekdayCheckbox/WeekdayCheckbox'
-import { weekdayNames } from '../../pages/CreateEditPage'
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Button, Dialog, Paragraph, useTheme } from "react-native-paper";
+import WeekdayCheckbox from "../../molecules/weekdayCheckbox/WeekdayCheckbox";
+import { weekdayNames } from "../../pages/CreateEditPage";
 
 type ChooseWeekdaysDialogProps = {
-  weekdaysOpen: boolean
-  handleDismissWeekdays: () => void
-  weekdays: number[]
-  setWeekdays: (weekDays: number[]) => void
-}
+  weekdaysOpen: boolean;
+  handleDismissWeekdays: () => void;
+  weekdays: number[];
+  setWeekdays: (weekDays: number[]) => void;
+};
 
-const ChooseWeekdaysDialog = ({ weekdays, setWeekdays, weekdaysOpen, handleDismissWeekdays }: ChooseWeekdaysDialogProps) => {
+const ChooseWeekdaysDialog = ({
+  weekdays,
+  setWeekdays,
+  weekdaysOpen,
+  handleDismissWeekdays,
+}: ChooseWeekdaysDialogProps) => {
+  const { colors } = useTheme();
 
-  const [selectedWeekdays, setSelectedWeekdays] = React.useState(weekdays)
+  const [selectedWeekdays, setSelectedWeekdays] = React.useState(weekdays);
 
   const handleSaveWeekdays = () => {
-    setWeekdays(selectedWeekdays)
-    handleDismissWeekdays()
-  }
+    setWeekdays(selectedWeekdays);
+    handleDismissWeekdays();
+  };
 
   const handleCancelWeekdays = () => {
-    handleDismissWeekdays()
-    setSelectedWeekdays(weekdays)
-  }
+    handleDismissWeekdays();
+    setSelectedWeekdays(weekdays);
+  };
 
   const handleAddRemoveWeekDay = (check: boolean, value: number) => {
-    const newWeekdays = Array.from(selectedWeekdays)
+    const newWeekdays = Array.from(selectedWeekdays);
     if (check) {
-      newWeekdays.push(value)
-      newWeekdays.sort((a, b) => a - b)
+      newWeekdays.push(value);
+      newWeekdays.sort((a, b) => a - b);
     }
     if (!check) {
-      newWeekdays.splice(newWeekdays.indexOf(value), 1)
+      newWeekdays.splice(newWeekdays.indexOf(value), 1);
     }
-    setSelectedWeekdays(newWeekdays)
-  }
+    setSelectedWeekdays(newWeekdays);
+  };
 
   return (
     <Dialog
       visible={weekdaysOpen}
       onDismiss={handleCancelWeekdays}
       dismissable
-      style={{}}
+      style={{ backgroundColor: colors.secondary }}
     >
       <Dialog.Content style={styles.dialog}>
         <View style={styles.title}>
@@ -51,43 +57,43 @@ const ChooseWeekdaysDialog = ({ weekdays, setWeekdays, weekdaysOpen, handleDismi
         <View style={styles.weekdayBox}>
           {weekdayNames.map((weekday, index) => {
             return (
-              <WeekdayCheckbox key={index} value={index} boxChecked={selectedWeekdays.includes(index)} handleCheck={handleAddRemoveWeekDay} title={`Every ${weekday}`} />
-            )
+              <WeekdayCheckbox
+                key={index}
+                value={index}
+                boxChecked={selectedWeekdays.includes(index)}
+                handleCheck={handleAddRemoveWeekDay}
+                title={`Every ${weekday}`}
+              />
+            );
           })}
         </View>
         <View style={styles.buttonBox}>
-          <Button onPress={handleCancelWeekdays}>
-            Cancel
-          </Button>
-          <Button onPress={handleSaveWeekdays} >
-            Ok
-          </Button>
+          <Button onPress={handleCancelWeekdays}>Cancel</Button>
+          <Button onPress={handleSaveWeekdays}>Ok</Button>
         </View>
       </Dialog.Content>
-    </Dialog >
+    </Dialog>
+  );
+};
 
-
-  )
-}
-
-export default ChooseWeekdaysDialog
+export default ChooseWeekdaysDialog;
 
 const styles = StyleSheet.create({
   dialog: {
     display: "flex",
     flexDirection: "column",
-    height: "auto"
+    height: "auto",
   },
   title: {
     marginBottom: 20,
   },
   weekdayBox: {
     backgroundColor: "white",
-    marginBottom: 20
+    marginBottom: 20,
   },
   buttonBox: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
-  }
-})
+  },
+});
