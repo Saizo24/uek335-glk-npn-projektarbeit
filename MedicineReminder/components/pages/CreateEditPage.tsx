@@ -117,15 +117,17 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
     }
     if (type === "New") {
       saveReminder(newReminder).then(() => {
-        createNewTriggers(newReminder)
-        navigation.goBack()
+        createNewTriggers(newReminder).then(() => {
+          navigation.goBack()
+        })
       })
     }
 
     if (type === "Edit") {
       updateDeleteReminder(newReminder, "update").then(() => {
-        createNewTriggers(newReminder)
-        navigation.goBack()
+        createNewTriggers(newReminder).then(() => {
+          navigation.goBack()
+        })
       })
     }
   }
