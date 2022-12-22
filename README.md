@@ -4,6 +4,7 @@
     1. [GitHub](#Github)
     2. [Frontend](#Frontend)
 3. [Modifications](#Modifications)
+4. [Basic Usage](#Basic-Usage)
 
 # Prerequisites
 
@@ -39,3 +40,7 @@ Type `yarn expo run:android` or if this doesn't work `yarn start` after installa
 You also have to edit your environmental variables. Add the following two to your system variables under `Path`: 
 `...\Android\Sdk\platform-tools` & `...\Android\Sdk\emulator`
 Afterwards, you need to add a new system variable called `ANDROID_HOME` with location `...\Android\Sdk`
+
+# Basic Usage
+Many parts of the application are prone to fail if used incorrectly. Be careful when you add new libraries and frameworks. This
+application is mainly for usage on android, since a library called notifee is apparently not compatible with it. 
