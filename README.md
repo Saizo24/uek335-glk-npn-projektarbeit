@@ -47,7 +47,7 @@ Afterwards, you need to add a new system variable called `ANDROID_HOME` with loc
 Many parts of the application are prone to fail if used incorrectly. Be careful when you add new libraries and frameworks. This
 application is mainly for usage on android, since a library called notifee is apparently not compatible with it. There is a possibility that
 the insertion of notifee makes it unable to run the application. A working part is on the computer of Gian-Luca Kunfermann and can in need be copied
-as a zip.
+as a zip. A local figma is available for viewing.
 
 
 # Basic Usage
