@@ -3,7 +3,7 @@
 2. [Setup](#Setup)
     1. [GitHub](#Github)
     2. [Frontend](#Frontend)
-3. [Further Modifications](#Further Modifications)
+3. [Modifications](#Modifications)
 
 # Prerequisites
 
@@ -35,7 +35,7 @@ application. Open the folder "Frontend" with **VSC**. Open a new terminal if non
 Type `yarn expo run:android` or if this doesn't work `yarn start` after installation is complete.
 
 
-# Further Modifications
+# Modifications
 You also have to edit your environmental variables. Add the following two to your system variables under `Path`: 
 `...\Android\Sdk\platform-tools` & `...\Android\Sdk\emulator`
 Afterwards, you need to add a new system variable called `ANDROID_HOME` with location `...\Android\Sdk`
