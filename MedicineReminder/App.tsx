@@ -6,7 +6,8 @@ import CreateEditPage from "./components/pages/CreateEditPage";
 import { de, enGB, registerTranslation } from "react-native-paper-dates";
 import "./i18n/config";
 import { ReminderContextProvider } from "./contexts/ReminderContext";
-import { MD3LightTheme as DefaultTheme, Provider as ThemeProvider } from "react-native-paper";
+import { MD3LightTheme as DefaultTheme, Provider as ThemeProvider, } from "react-native-paper";
+import { StyleSheet } from "react-native"
 
 const Stack = createNativeStackNavigator();
 
@@ -38,7 +39,9 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Reminder" component={LandingPage} />
-            <Stack.Screen name="New Reminder">
+            <Stack.Screen name="New Reminder" options={{
+              headerStyle: styles.header
+            }}>
               {() => <CreateEditPage type="New" />}
             </Stack.Screen>
             <Stack.Screen name="Edit Reminder">
@@ -50,3 +53,9 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: theme.colors.primary.bright
+  }
+})
