@@ -22,7 +22,7 @@ export const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
  * @returns 
  */
 const CreateEditPage = ({ type }: CreateEditPageProp) => {
-  const { reminders, activeReminder, saveReminder, updateDeleteReminder } = useContext(ReminderContext)
+  const { reminders, activeReminder, saveReminder, updateDeleteReminder, createNewTriggers } = useContext(ReminderContext)
 
   //State variables for reminder
   const [minutes, setMinutes] = React.useState(activeReminder ? activeReminder.minutes : 0);
@@ -117,13 +117,17 @@ const CreateEditPage = ({ type }: CreateEditPageProp) => {
     }
     if (type === "New") {
       saveReminder(newReminder).then(() => {
-        navigation.goBack()
+        createNewTriggers(newReminder).then(() => {
+          navigation.goBack()
+        })
       })
     }
 
     if (type === "Edit") {
       updateDeleteReminder(newReminder, "update").then(() => {
-        navigation.goBack()
+        createNewTriggers(newReminder).then(() => {
+          navigation.goBack()
+        })
       })
     }
   }
