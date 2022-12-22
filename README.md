@@ -4,7 +4,8 @@
     1. [GitHub](#Github)
     2. [Frontend](#Frontend)
 3. [Modifications](#Modifications)
-4. [Basic Usage](#Basic-Usage)
+4. [Further Information](#Further-Information)
+5. [Basic Usage](#Basic-Usage)
 
 # Prerequisites
 
@@ -41,6 +42,17 @@ You also have to edit your environmental variables. Add the following two to you
 `...\Android\Sdk\platform-tools` & `...\Android\Sdk\emulator`
 Afterwards, you need to add a new system variable called `ANDROID_HOME` with location `...\Android\Sdk`
 
-# Basic Usage
+
+# Further Information
 Many parts of the application are prone to fail if used incorrectly. Be careful when you add new libraries and frameworks. This
 application is mainly for usage on android, since a library called notifee is apparently not compatible with it. 
+
+
+# Basic Usage
+The application starts on a landing page with no set reminders. On press of the plus button on the bottom, you will be redirected
+to a new page, where you can add a reminder to your reminder list. The user cannot enter false information, since the time is locked behind
+a time picker and the repeat count in weeks only allows for numbers to be entered. After creating one or multiple reminders, by clicking
+on a reminder you will enter the edit page for the corresponding reminder. There you can change whichever information you'd like. By 
+long pressing on a single reminder on the overview page, you will have the option to delete this specifig reminder by clicking on the 
+trashcan symbol that will appear for five seconds. Notifications do sadly not work at this point in time, but will hopefully be 
+repaired in the near future.
