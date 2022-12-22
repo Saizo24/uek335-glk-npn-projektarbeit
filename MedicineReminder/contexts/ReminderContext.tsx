@@ -17,6 +17,7 @@ export type ReminderContextType = {
     reminder: Reminder,
     type: "delete" | "update"
   ) => Promise<void>;
+  createNewTriggers: (reminder: Reminder) => Promise<void>
 };
 
 const noContextProviderFound = () => {
@@ -81,58 +82,59 @@ export const ReminderContextProvider = ({
     if (type === "update") {
       newReminders.splice(index, 1, reminder);
     }
-
-    async function createNewTriggers(reminder: Reminder) {
-      let date = new Date(Date.now());
-      reminder.days.forEach(async (day: number) => {
-        console.log(day);
-        date.setDate(date.getDate() - date.getDay() + day);
-        date.setHours(reminder.hours);
-        date.setMinutes(reminder.minutes);
-        console.log(date);
-
-        const channelId = await notifee.createChannel({
-          id: "default",
-          name: "Default Channel",
-          importance: AndroidImportance.HIGH,
-        });
-
-        // Create a time-based trigger
-        const trigger: TimestampTrigger = {
-          type: TriggerType.TIMESTAMP,
-          timestamp: date.getTime(), // fire at 11:10am (10 minutes before meeting)
-        };
-
-        // Create a trigger notification
-        await notifee.createTriggerNotification(
-          {
-            title: reminder.name,
-            body: reminder.description,
-            android: {
-              channelId,
-            },
-          },
-          trigger
-        );
-        console.log(trigger);
-        notifee
-          .getTriggerNotificationIds()
-          .then((ids) => console.log("All trigger notifications: ", ids));
-      });
-    }
-
-    return (
-      <ReminderContext.Provider
-        value={{
-          reminders,
-          activeReminder,
-          setActiveReminder,
-          saveReminder,
-          updateDeleteReminder,
-          createNewTriggers
-        }}
-      >
-        {children}
-      </ReminderContext.Provider>
-    )
   }
+
+  async function createNewTriggers(reminder: Reminder) {
+    let date = new Date(Date.now());
+    reminder.days.forEach(async (day: number) => {
+      console.log(day);
+      date.setDate(date.getDate() - date.getDay() + day);
+      date.setHours(reminder.hours);
+      date.setMinutes(reminder.minutes);
+      console.log(date);
+
+      const channelId = await notifee.createChannel({
+        id: "default",
+        name: "Default Channel",
+        importance: AndroidImportance.HIGH,
+      });
+
+      // Create a time-based trigger
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: date.getTime(), // fire at 11:10am (10 minutes before meeting)
+      };
+
+      // Create a trigger notification
+      await notifee.createTriggerNotification(
+        {
+          title: reminder.name,
+          body: reminder.description,
+          android: {
+            channelId,
+          },
+        },
+        trigger
+      );
+      console.log(trigger);
+      notifee
+        .getTriggerNotificationIds()
+        .then((ids) => console.log("All trigger notifications: ", ids));
+    });
+  }
+
+  return (
+    <ReminderContext.Provider
+      value={{
+        reminders,
+        activeReminder,
+        setActiveReminder,
+        saveReminder,
+        updateDeleteReminder,
+        createNewTriggers
+      }}
+    >
+      {children}
+    </ReminderContext.Provider>
+  )
+}
