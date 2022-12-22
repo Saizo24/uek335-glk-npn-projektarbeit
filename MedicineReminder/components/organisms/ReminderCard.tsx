@@ -40,33 +40,30 @@ export default function ReminderCard(props: ReminderProps) {
       delayLongPress={1000}
       onPress={() => {
         if (!deleteActive) {
-          setActiveReminder(props.reminder)
+          setActiveReminder(props.reminder);
           navigation.navigate("Edit Reminder");
         }
         if (deleteActive) {
-          setDeleteActive(false)
+          setDeleteActive(false);
         }
       }}
       onLongPress={() => {
-        setDeleteActive(true)
+        setDeleteActive(true);
       }}
       delayPressOut={5000}
       onPressOut={() => {
-        setDeleteActive(false)
+        setDeleteActive(false);
       }}
     >
-      <Card
-        style={styles.card}
-      >
+      <Card style={styles.card}>
         <View style={styles.layout}>
           <IconButton
             icon={"delete"}
             iconColor="red"
-
             onPress={() => {
               updateDeleteReminder(props.reminder, "delete").then(() => {
-                setDeleteActive(false)
-              })
+                setDeleteActive(false);
+              });
             }}
             style={{ display: deleteActive ? undefined : "none" }}
           />
@@ -78,7 +75,9 @@ export default function ReminderCard(props: ReminderProps) {
               {props.reminder.name}
             </Title>
             <Paragraph style={styles.cardText}>
-              {props.reminder.days.map((day: number) => " " + WeekdayModel[day])}
+              {props.reminder.days.map(
+                (day: number) => " " + WeekdayModel[day]
+              )}
             </Paragraph>
           </Card.Content>
           <Card.Actions style={styles.cardAction}>
@@ -91,7 +90,6 @@ export default function ReminderCard(props: ReminderProps) {
         </View>
       </Card>
     </TouchableWithoutFeedback>
-
   );
 }
 
